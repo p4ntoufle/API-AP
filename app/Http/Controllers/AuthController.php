@@ -24,13 +24,13 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="User registered successfully",
+     *         description="Utilisiateur inscrit",
      *         @OA\JsonContent(
      *             @OA\Property(property="user", type="object"),
      *             @OA\Property(property="token", type="string")
      *         )
      *     ),
-     *     @OA\Response(response=422, description="Validation error")
+     *     @OA\Response(response=422, description="Erreur de validation des données"),
      * )
      */
     /// INSCRIPTION ///
@@ -72,13 +72,13 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="User logged in",
+     *         description="Utilisateur connecté",
      *         @OA\JsonContent(
      *             @OA\Property(property="user", type="object"),
      *             @OA\Property(property="token", type="string")
      *         )
      *     ),
-     *     @OA\Response(response=401, description="Invalid credentials")
+     *     @OA\Response(response=401, description="Mauvais Identifiants"),
      * )
      */
     /// CONNEXION ///
@@ -110,7 +110,7 @@ class AuthController extends Controller
      *     security={{"sanctum": {}}},
      *     @OA\Response(
      *         response=200,
-     *         description="Logged out successfully",
+     *         description="Déconnecté",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string")
      *         )
@@ -134,14 +134,14 @@ class AuthController extends Controller
      *     security={{"sanctum": {}}},
      *     @OA\Response(
      *         response=200,
-     *         description="Authenticated user info",
+     *         description="Infos du profil utilisateur",
      *         @OA\JsonContent(
      *             @OA\Property(property="id", type="integer"),
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="email", type="string")
      *         )
      *     ),
-     *     @OA\Response(response=401, description="Unauthenticated")
+     *     @OA\Response(response=401, description="Non authentifié"),
      * )
      */
     /// INFORMATIONS UTILISATEUR CONNECTÉ ///
