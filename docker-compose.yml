@@ -1,25 +1,4 @@
 services:
-  app:
-    image: php:8.2-apache
-    container_name: laravel_app
-    ports:
-      - '8083:80'
-    volumes:
-      - ./website:/var/www/html
-    working_dir: /var/www/html
-    networks:
-      - infra_net
-    depends_on:
-      - db
-    command: >
-      bash -c "
-      apt-get update &&
-      apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip git &&
-      docker-php-ext-configure gd --with-freetype --with-jpeg &&
-      docker-php-ext-install pdo pdo_mysql gd &&
-      a2enmod rewrite &&
-      apache2-foreground
-      "
 
   # MySQL Database
   db:
@@ -38,21 +17,6 @@ services:
     networks:
       - infra_net
 
-  # GLPI (Web Interface for ITSM)
-  glpi:
-    image: diouxx/glpi
-    container_name: glpi
-    restart: always
-    ports:
-      - "8080:80"
-    environment:
-      - TIMEZONE=Europe/Paris
-    volumes:
-      - glpi_data:/var/www/html/glpi
-    networks:
-      - infra_net
-    depends_on:
-      - db
 
   # PhpMyAdmin for MySQL
   phpmyadmin:
@@ -64,23 +28,6 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "8081:80"
-    networks:
-      - infra_net
-    depends_on:
-      - db
-
-  # OCS Inventory (Inventory + Agents connection)
-  ocs:
-    image: ocsinventory/ocsinventory-docker-image:latest
-    container_name: ocs_server
-    restart: always
-    environment:
-      - OCS_DB_HOST=db
-      - OCS_DB_NAME=ocsweb
-      - OCS_DB_USER=ocsuser
-      - OCS_DB_PASS=ocspassword
-    ports:
-      - "8082:80"
     networks:
       - infra_net
     depends_on:

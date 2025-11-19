@@ -47,7 +47,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "User registered successfully",
+                        "description": "Utilisiateur inscrit",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -65,7 +65,7 @@
                         }
                     },
                     "422": {
-                        "description": "Validation error"
+                        "description": "Erreur de validation des données"
                     }
                 }
             }
@@ -101,7 +101,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "User logged in",
+                        "description": "Utilisateur connecté",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -119,7 +119,7 @@
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials"
+                        "description": "Mauvais Identifiants"
                     }
                 }
             }
@@ -133,7 +133,7 @@
                 "operationId": "69281b12abb272c76871f19cb17ca563",
                 "responses": {
                     "200": {
-                        "description": "Logged out successfully",
+                        "description": "Déconnecté",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -164,7 +164,7 @@
                 "operationId": "b9abb1a7a74670a19c215c2c133f14d8",
                 "responses": {
                     "200": {
-                        "description": "Authenticated user info",
+                        "description": "Infos du profil utilisateur",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -185,7 +185,7 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Non authentifié"
                     }
                 },
                 "security": [
