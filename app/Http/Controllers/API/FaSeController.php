@@ -52,13 +52,17 @@ class FaSeController extends Controller
             $validated['animals_count'] = 1;
         }
 
-        $validated['pdf_path'] = $this->storePdf(
-            (int) $validated['user_id'],
-            $request->file('pdf'),
-            $validated['numero']
-        );
-
-        unset($validated['pdf']);
+        if ($request->hasFile('pdf')) {
+            $validated['pdf_path'] = $this->storePdf(
+                (int) $validated['user_id'],
+                $request->file('pdf'),
+                $validated['numero']
+            );
+            unset($validated['pdf']);
+        } else {
+            $validated['pdf_path'] = $this->normalizeStoredPath($validated['pdf_path'] ?? '');
+            $this->assertPdfExists($validated['pdf_path']);
+        }
 
         $facture = Facture::create($validated);
 
@@ -84,6 +88,11 @@ class FaSeController extends Controller
                 $validated['numero'] ?? $facture->numero
             );
             unset($validated['pdf']);
+        } elseif (array_key_exists('pdf_path', $validated) && $validated['pdf_path']) {
+            $validated['pdf_path'] = $this->normalizeStoredPath($validated['pdf_path']);
+            $this->assertPdfExists($validated['pdf_path']);
+        } else {
+            unset($validated['pdf_path']);
         }
 
         $facture->update($validated);
@@ -103,9 +112,13 @@ class FaSeController extends Controller
     {
         $this->authorizeFactureAccess($request, $facture);
 
-        if (! Storage::disk($this->invoiceDisk)->exists($facture->pdf_path)) {
+        $target = $this->resolvePdfTarget($facture->pdf_path);
+
+        if (! $target) {
             abort(404, 'Le fichier de cette facture est introuvable.');
         }
+
+        [$disk, $path] = $target;
 
         $filename = sprintf(
             '%s-%s.pdf',
@@ -113,11 +126,17 @@ class FaSeController extends Controller
             $facture->numero
         );
 
-        return Storage::disk($this->invoiceDisk)->download($facture->pdf_path, $filename);
+        if ($disk === null) {
+            return response()->download($path, $filename);
+        }
+
+        return Storage::disk($disk)->download($path, $filename);
     }
 
     private function validatePayload(Request $request, ?Facture $facture = null): array
     {
+        $pdfRules = ['file', 'mimes:pdf', 'max:20480'];
+
         $rules = [
             'user_id' => [$facture ? 'sometimes' : 'required', 'exists:users,id'],
             'pension_id' => [$facture ? 'sometimes' : 'required', 'exists:pensions,id'],
@@ -133,7 +152,13 @@ class FaSeController extends Controller
             'animals_count' => ['nullable', 'integer', 'min:1', 'max:500'],
             'total_ht' => ['nullable', 'numeric', 'min:0'],
             'total_ttc' => ['nullable', 'numeric', 'min:0'],
-            'pdf' => [$facture ? 'sometimes' : 'required', 'file', 'mimes:pdf', 'max:20480'],
+            'pdf' => array_merge(
+                [$facture ? 'sometimes' : 'required_without:pdf_path'],
+                $pdfRules
+            ),
+            'pdf_path' => $facture
+                ? ['sometimes', 'nullable', 'string', 'max:500']
+                : ['required_without:pdf', 'nullable', 'string', 'max:500'],
         ];
 
         return $request->validate($rules);
@@ -177,9 +202,25 @@ class FaSeController extends Controller
 
     private function deletePdf(?string $path): void
     {
-        if ($path && Storage::disk($this->invoiceDisk)->exists($path)) {
-            Storage::disk($this->invoiceDisk)->delete($path);
+        if (! $path) {
+            return;
         }
+
+        $target = $this->resolvePdfTarget($path);
+
+        if (! $target) {
+            return;
+        }
+
+        [$disk, $resolved] = $target;
+
+        if ($disk === null) {
+            @unlink($resolved);
+
+            return;
+        }
+
+        Storage::disk($disk)->delete($resolved);
     }
 
     private function authorizeFactureAccess(Request $request, Facture $facture): void
@@ -188,6 +229,125 @@ class FaSeController extends Controller
 
         if (! $user || $user->id !== $facture->user_id) {
             abort(403, 'Vous ne pouvez pas accéder à cette facture.');
+        }
+    }
+
+    private function normalizeStoredPath(string $path): string
+    {
+        $normalized = str_replace('\\', '/', $path);
+        $normalized = preg_replace('#\.\.+#', '', $normalized ?? '') ?: '';
+        $normalized = trim($normalized);
+
+        return ltrim($normalized, '/');
+    }
+
+    private function resolvePdfTarget(?string $path): ?array
+    {
+        if (! $path) {
+            return null;
+        }
+
+        $candidates = $this->candidatePaths($path);
+
+        foreach ($this->disksToProbe() as $disk) {
+            foreach ($candidates as $candidate) {
+                if (Storage::disk($disk)->exists($candidate)) {
+                    return [$disk, $candidate];
+                }
+            }
+        }
+
+        foreach ($candidates as $candidate) {
+            foreach ($this->absolutePathCandidates($candidate) as $absolute) {
+                if ($absolute && is_file($absolute)) {
+                    return [null, $absolute];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function candidatePaths(string $path): array
+    {
+        $base = $this->normalizeStoredPath($path);
+
+        if ($base === '') {
+            return [];
+        }
+
+        $candidates = [$base];
+
+        $prefixesToStrip = [
+            'storage/app/public/',
+            'storage/app/private/',
+            'storage/app/',
+            'storage/',
+            'app/',
+        ];
+
+        foreach ($prefixesToStrip as $prefix) {
+            if (Str::startsWith($base, $prefix)) {
+                $candidates[] = substr($base, strlen($prefix));
+            }
+        }
+
+        $prefixesToAdd = [
+            '',
+            'storage/',
+            'storage/app/',
+            'storage/app/public/',
+            'storage/app/private/',
+            'app/',
+            'public/',
+            'private/',
+        ];
+
+        $normalizedCandidates = [];
+        foreach (array_filter(array_unique($candidates)) as $candidate) {
+            $normalizedCandidates[] = $candidate;
+            $candidate = ltrim($candidate, '/');
+            foreach ($prefixesToAdd as $prefix) {
+                $normalizedCandidates[] = ltrim($prefix . $candidate, '/');
+            }
+        }
+
+        return array_values(array_unique(array_filter($normalizedCandidates)));
+    }
+
+    private function disksToProbe(): array
+    {
+        return array_values(array_unique(array_filter([
+            $this->invoiceDisk,
+            config('filesystems.default'),
+            'public',
+        ])));
+    }
+
+    /**
+     * @return list<string|null>
+     */
+    private function absolutePathCandidates(string $relative): array
+    {
+        $relative = ltrim($relative, '/');
+
+        return [
+            $relative,
+            storage_path($relative),
+            storage_path("app/{$relative}"),
+            storage_path("app/public/{$relative}"),
+            storage_path("app/private/{$relative}"),
+            public_path($relative),
+            base_path($relative),
+        ];
+    }
+
+    private function assertPdfExists(string $path): void
+    {
+        if (! $this->resolvePdfTarget($path)) {
+            throw ValidationException::withMessages([
+                'pdf_path' => 'Le fichier PDF indiqué est introuvable sur le serveur.',
+            ]);
         }
     }
 }
