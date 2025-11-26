@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\API\GPBController;
 use App\Http\Controllers\API\FaSeController;
+use App\Http\Controllers\AnimalController;
 
 /// INSCRIPTION ///
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -31,3 +32,10 @@ Route::put('/pensions/{id}/update', [GPBController::class, 'update']);
 /// ROUTES POUR LES FICHES ///
 /// Récupérer la pension
 Route::get('/fiches', [GPBController::class, 'show']);
+
+
+Route::get('/animaux', [AnimalController::class, 'index']);
+Route::get('/animaux/{id}', [AnimalController::class, 'show']);
+Route::post('/animaux', [AnimalController::class, 'store']);
+Route::put('/animaux/{id}', [AnimalController::class, 'update']);
+Route::delete('/animaux/{id}', [AnimalController::class, 'destroy']);
