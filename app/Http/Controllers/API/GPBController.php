@@ -11,7 +11,7 @@ use App\Models\Pension;
 class GPBController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Afficher la liste des pensions.
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
@@ -20,17 +20,32 @@ class GPBController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Ajouter une pension.
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'adresse' => 'required|string|max:255',
-            'ville' => 'required|string|max:100',
-            'CP' => 'nullable|string|max:10',
-            'tel' => 'nullable|string|max:20'
+            'nom'               => 'required|string|max:255',
+            'adresse'           => 'required|string|max:255',
+            'ville'             => 'required|string|max:100',
+            'region'            => 'nullable|string|max:100',
+            'code_postal'       => 'required|string|max:20',
+            'telephone'         => 'nullable|string|max:20',
+            'email'             => 'nullable|email|max:255',
+            'description'       => 'nullable|string',
+            'capacite_chiens'   => 'nullable|integer|min:0',
+            'capacite_chats'    => 'nullable|integer|min:0',
+            'image'             => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // limite 2MB
+            'directeur_nom'     => 'nullable|string|max:255',
+            'directeur_email'   => 'nullable|email|max:255',
+            'services'          => 'nullable|string', // JSON possible, change en 'array'
+            'horaires'          => 'nullable|string', // JSON possible
+            'prix_chien_jour'   => 'nullable|numeric|min:0',
+            'prix_chat_jour'    => 'nullable|numeric|min:0',
+            'actif'             => 'required|boolean',
+            'famille'           => 'nullable|boolean',
         ]);
 
         $pension = Pension::create($validated);
@@ -38,7 +53,7 @@ class GPBController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Afficher la pension.
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
@@ -49,7 +64,7 @@ class GPBController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Mettre à jour la pension.
      * @param Request $request
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
@@ -58,10 +73,25 @@ class GPBController extends Controller
     {
         $pension = Pension::findOrFail($id);
         $validated = $request->validate([
-            'adresse' => 'sometimes|required|string|max:255',
-            'ville' => 'sometimes|required|string|max:100',
-            'CP' => 'sometimes|nullable|string|max:10',
-            'tel' => 'sometimes|nullable|string|max:20'
+            'nom'               => 'required|string|max:255',
+            'adresse'           => 'required|string|max:255',
+            'ville'             => 'required|string|max:100',
+            'region'            => 'nullable|string|max:100',
+            'code_postal'       => 'required|string|max:20',
+            'telephone'         => 'nullable|string|max:20',
+            'email'             => 'nullable|email|max:255',
+            'description'       => 'nullable|string',
+            'capacite_chiens'   => 'nullable|integer|min:0',
+            'capacite_chats'    => 'nullable|integer|min:0',
+            'image'             => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // limite 2MB
+            'directeur_nom'     => 'nullable|string|max:255',
+            'directeur_email'   => 'nullable|email|max:255',
+            'services'          => 'nullable|string', // JSON possible, change en 'array'
+            'horaires'          => 'nullable|string', // JSON possible
+            'prix_chien_jour'   => 'nullable|numeric|min:0',
+            'prix_chat_jour'    => 'nullable|numeric|min:0',
+            'actif'             => 'required|boolean',
+            'famille'           => 'nullable|boolean',
         ]);
 
         $pension->update($validated);
@@ -69,7 +99,7 @@ class GPBController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprimer la pension.
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */

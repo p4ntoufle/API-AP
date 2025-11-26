@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Pension;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,11 @@ class SiteController extends Controller
     public function pensions() {
         $pensions = Pension::all();
         return view('pensions', compact('pensions'));
+    }
+
+    public function fiches() {
+        $users = User::with('pensions')->get();
+        return view('fiches', compact('users'));
     }
 
     public function contact() {

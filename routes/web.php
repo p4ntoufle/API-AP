@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [SiteController::class, 'home'])->name('home');
 Route::get('/pensions', [SiteController::class, 'pensions'])->name('pensions');
 Route::get('/contact', [SiteController::class, 'contact'])->name('contact');
+Route::get('/fiches', [SiteController::class, 'fiches'])->name('fiches');
 
 Route::get('/login', [SiteController::class, 'showLogin'])->name('login');
 Route::post('/login', [SiteController::class, 'login']);

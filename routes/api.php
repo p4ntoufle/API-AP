@@ -20,3 +20,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/pensions', [GPBController::class, 'index']);
 /// Ajouter une pension ///
 Route::post('/pensions', [GPBController::class, 'store']);
+/// Modifier une pension ///
+Route::put('/pensions/{id}/update', [GPBController::class, 'update']);
+
+/// ROUTES POUR LES FICHES ///
+/// Récupérer la pension
+Route::get('/fiches', [GPBController::class, 'show']);
