@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\API\GPBController;
+use App\Http\Controllers\API\FaSeController;
 
 /// INSCRIPTION ///
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -13,6 +14,10 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
+
+    Route::get('/factures/{facture}/download', [FaSeController::class, 'download'])
+        ->name('api.factures.download');
+    Route::apiResource('factures', FaSeController::class);
 });
 
 /// ROUTES POUR LES PENSIONS ///

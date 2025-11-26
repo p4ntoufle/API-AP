@@ -25,6 +25,15 @@ class SiteController extends Controller
         return view('fiches', compact('users'));
     }
 
+    public function factures() {
+        $user = Auth::user();
+        $factures = $user
+            ? $user->factures()->with('pension')->orderByDesc('issued_at')->orderByDesc('created_at')->get()
+            : collect();
+
+        return view('factures', compact('factures', 'user'));
+    }
+
     public function contact() {
         return view('contact');
     }

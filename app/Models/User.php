@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pension::class, 'user_id');
     }
+
+    public function factures()
+    {
+        return $this->hasMany(Facture::class);
+    }
 }

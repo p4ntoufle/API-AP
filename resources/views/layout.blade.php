@@ -160,6 +160,11 @@
                 </li>
                 @auth
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('factures') }}">
+                            <i class="fas fa-file-alt me-1"></i> Vos factures
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('fiches') }}">
                             <i class="fas fa-file-alt me-1"></i> Vos fiches
                         </a>
