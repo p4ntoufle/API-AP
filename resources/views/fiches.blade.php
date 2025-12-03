@@ -14,7 +14,7 @@
             <ul>
                 @foreach($user->pensions as $pension)
                     <div class="pension-item">
-                        <form method="POST" action="/pensions/{{ $pension->id }}/update">
+                        <form method="post" action="{{ route('fiches.update', $pension->id) }}">
                             @csrf
                             @method('PUT')
 
@@ -22,11 +22,13 @@
                                 <h4>{{ $pension->nom ?? 'Nom non défini' }}</h4>
                                 <p>Adresse: {{ $pension->adresse ?? '-' }}</p>
                                 <p>Ville: {{ $pension->ville ?? '-' }}</p>
+                                <p>Code postal: {{ $pension->code_postal ?? '-' }}</p>
                                 <p>Capacité chiens: {{ $pension->capacite_chiens ?? 0 }}</p>
                                 <p>Capacité chats: {{ $pension->capacite_chats ?? 0 }}</p>
                                 <p>Email: {{ $pension->email ?? '-' }}</p>
                                 <p>Prix chien/jour: {{ $pension->prix_chien_jour ?? '-' }}€</p>
                                 <p>Prix chat/jour: {{ $pension->prix_chat_jour ?? '-' }}€</p>
+                                <p>{{ $pension->actif = 1 ? 'Actif' : 'Inactif' }}</p>
                                 <button type="button" class="edit-btn">Modifier</button>
                             </div>
 
@@ -39,6 +41,9 @@
 
                                 <label>Ville</label>
                                 <input type="text" name="ville" value="{{ $pension->ville }}">
+
+                                <label>Code postal</label>
+                                <input type="text" name="code_postal" value="{{ $pension->code_postal }}">
 
                                 <label>Capacité chiens</label>
                                 <input type="number" name="capacite_chiens" value="{{ $pension->capacite_chiens }}">
@@ -55,9 +60,21 @@
                                 <label>Prix chat/jour</label>
                                 <input type="text" name="prix_chat_jour" value="{{ $pension->prix_chat_jour }}">
 
-                                <button type="submit">Sauvegarder</button>
+                                <label>Actif</label>
+                                <input type="hidden" name="actif" value="0">
+                                <input type="checkbox" name="actif" value="1" {{ $pension->actif ? 'checked' : '' }}>
+
+                                <button type="submit">Appliquer</button>
                                 <button type="button" class="cancel-btn">Annuler</button>
                             </div>
+
+                            @if ($errors->any())
+                                <div>
+                                    @foreach ($errors->all() as $error)
+                                        <p>{{ $error }}</p>
+                                    @endforeach
+                                </div>
+                            @endif
                         </form>
                     </div>
                 @endforeach
@@ -67,6 +84,7 @@
         @endif
     @endforeach
 </body>
+
 <script>
 document.querySelectorAll('.edit-btn').forEach(btn => {
     btn.addEventListener('click', e => {
@@ -76,18 +94,19 @@ document.querySelectorAll('.edit-btn').forEach(btn => {
     });
 });
 
-document.querySelectorAll('.cancel-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-        const parent = e.target.closest('.pension-item');
-        parent.querySelector('.edit-mode').style.display = 'none';
-        parent.querySelector('.view-mode').style.display = 'block';
+function HideEditInputs() {
+    document.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+            const parent = e.target.closest('.pension-item');
+            parent.querySelector('.edit-mode').style.display = 'none';
+            parent.querySelector('.view-mode').style.display = 'block';
+        });
     });
-});
+}
 
 document.querySelectorAll('.pension-item form').forEach(form => {
     form.addEventListener('submit', e => {
-        e.preventDefault();
-        alert('Les modifications ont été sauvegardées.');
+        HideEditInputs();
     });
 });
 </script>

@@ -83,10 +83,10 @@ class GPBController extends Controller
             'description'       => 'nullable|string',
             'capacite_chiens'   => 'nullable|integer|min:0',
             'capacite_chats'    => 'nullable|integer|min:0',
-            'image'             => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // limite 2MB
+            'image'             => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // limite 2MB
             'directeur_nom'     => 'nullable|string|max:255',
             'directeur_email'   => 'nullable|email|max:255',
-            'services'          => 'nullable|string', // JSON possible, change en 'array'
+            'services'          => 'nullable|string', // JSON possible - change en 'array'
             'horaires'          => 'nullable|string', // JSON possible
             'prix_chien_jour'   => 'nullable|numeric|min:0',
             'prix_chat_jour'    => 'nullable|numeric|min:0',
@@ -95,7 +95,7 @@ class GPBController extends Controller
         ]);
 
         $pension->update($validated);
-        return response()->json($pension);
+        return redirect()->back()->with('success', 'Informations de pension à jour');
     }
 
     /**

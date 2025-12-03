@@ -30,8 +30,10 @@ Route::post('/pensions', [GPBController::class, 'store']);
 Route::put('/pensions/{id}/update', [GPBController::class, 'update']);
 
 /// ROUTES POUR LES FICHES ///
-/// Récupérer la pension
-Route::get('/fiches', [FaSeController::class, 'show']);
+/// Récupérer la fiche pension
+Route::get('/fiches', [GPBController::class, 'show']);
+/// Modifier la fiche pension
+Route::put('/fiches/{fiche}', [GPBController::class, 'update']);
 
 /// ROUTES POUR LES FACTURES ///
 /// Récupérer les factures

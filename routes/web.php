@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\GPBController as GPBController;
 use App\Http\Controllers\API\FaSeController as FactureController;
 use App\Http\Controllers\Web\SiteController;
 use Illuminate\Support\Facades\Route;
@@ -15,7 +16,10 @@ Route::get('/login', [SiteController::class, 'showLogin'])->name('login');
 Route::post('/login', [SiteController::class, 'login']);
 Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
 
+
 Route::middleware('auth')->group(function () {
+    Route::put('/fiches/{fiche}', [GPBController::class, 'update'])
+        ->name('fiches.update');
     Route::get('/factures/{facture}/telecharger', [FactureController::class, 'download'])
         ->name('factures.download');
 });
