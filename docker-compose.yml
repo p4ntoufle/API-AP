@@ -1,8 +1,29 @@
 services:
+  app:
+    build: .
+    container_name: laravel_app
+    volumes:
+      - .:/var/www/html
+    networks:
+      - infra_net
+    depends_on:
+      - db
 
-  # MySQL Database
+  nginx:
+    image: nginx:alpine
+    container_name: laravel_nginx
+    ports:
+      - '8083:80'
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - infra_net
+    depends_on:
+      - app
+
   db:
-    image: mariadb:11.3
+    image: mariadb
     container_name: mysql_db
     restart: always
     ports:
@@ -17,10 +38,8 @@ services:
     networks:
       - infra_net
 
-
-  # PhpMyAdmin for MySQL
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: arm64v8/phpmyadmin
     container_name: phpmyadmin
     restart: always
     environment:
