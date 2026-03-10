@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -403,3 +404,30 @@
 </script>
 </body>
 </html>
+=======
+@extends('layout')
+
+@section('content')
+    <div class="d-flex justify-content-center">
+        <form method="POST" action="{{ route('login') }}" class="p-4 rounded shadow bg-white" style="min-width: 320px; max-width: 400px; width: 100%;">
+            @csrf
+            <h3 class="text-center mb-4 text-success">Connexion</h3>
+
+            @if($errors->any())
+                <div class="alert alert-danger">{{ $errors->first() }}</div>
+            @endif
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Adresse e-mail</label>
+                <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" placeholder="Entrez votre email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Entrez votre mot de passe" required>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Se connecter</button>
+        </form>
+    </div>
+@endsection
+>>>>>>> 27a27e8 (Ajout routes navbar, migration animaux et fix login)

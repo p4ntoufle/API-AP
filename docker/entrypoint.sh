@@ -6,6 +6,8 @@ until php -r "new PDO('mysql:host=db;port=3306;dbname=MiseAuVert', 'miseauvert',
   sleep 2
 done
 
+php artisan config:clear
+
 echo "Running migrations..."
 php artisan migrate --force
 

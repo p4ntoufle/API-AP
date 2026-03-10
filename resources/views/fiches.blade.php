@@ -28,7 +28,7 @@
                                 <p>Email: {{ $pension->email ?? '-' }}</p>
                                 <p>Prix chien/jour: {{ $pension->prix_chien_jour ?? '-' }}€</p>
                                 <p>Prix chat/jour: {{ $pension->prix_chat_jour ?? '-' }}€</p>
-                                <p>{{ $pension->actif = 1 ? 'Actif' : 'Inactif' }}</p>
+                                <p>{{ $pension->actif == 1 ? 'Actif' : 'Inactif' }}</p>
                                 <button type="button" class="edit-btn">Modifier</button>
                             </div>
 

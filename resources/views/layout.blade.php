@@ -154,6 +154,16 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ route('services') }}">
+                        <i class="fas fa-concierge-bell me-1"></i> Services
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('horaires') }}">
+                        <i class="fas fa-clock me-1"></i> Horaires
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('contact') }}">
                         <i class="fas fa-envelope me-1"></i> Contact
                     </a>
@@ -161,7 +171,7 @@
                 @auth
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('factures') }}">
-                            <i class="fas fa-file-alt me-1"></i> Vos factures
+                            <i class="fas fa-file-invoice me-1"></i> Vos factures
                         </a>
                     </li>
                     <li class="nav-item">
@@ -200,7 +210,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Effet de scroll sur la navbar
     window.addEventListener('scroll', function() {
         const navbar = document.querySelector('.modern-navbar');
         if (window.scrollY > 50) {
@@ -210,7 +219,6 @@
         }
     });
 
-    // Ajouter la classe active sur le lien courant
     const currentLocation = window.location.pathname;
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
