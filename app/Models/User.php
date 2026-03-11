@@ -48,7 +48,7 @@ class User extends Authenticatable
 
     public function pensions()
     {
-        return $this->hasMany(Pension::class, 'user_id');
+        return $this->belongsToMany(Pension::class, 'factures', 'user_id', 'pension_id')->distinct();
     }
 
     public function factures()

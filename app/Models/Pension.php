@@ -31,9 +31,9 @@ class Pension extends Model {
         'famille'
     ];
 
-    public function user()
+    public function users()
     {
-        return $this->hasMany(Pension::class, 'user_id');
+        return $this->belongsToMany(User::class, 'factures', 'pension_id', 'user_id')->distinct();
     }
 
     public function factures()
