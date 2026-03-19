@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Models\Animaux;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,5 +55,9 @@ class User extends Authenticatable
     public function factures()
     {
         return $this->hasMany(Facture::class);
+    }
+    public function animaux()
+    {
+        return $this->hasMany(Animaux::class, 'user_id');
     }
 }

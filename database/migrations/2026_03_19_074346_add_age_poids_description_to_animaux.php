@@ -9,16 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('animaux', function (Blueprint $table) {
-            $table->boolean('carnet_vaccination')->default(false);
-            $table->boolean('vaccin_a_jour')->default(false);
-            $table->boolean('vermifuge_a_jour')->default(false);
+            $table->integer('age')->nullable();
+            $table->decimal('poids', 5, 2)->nullable();
+            $table->text('description')->nullable();
         });
     }
 
     public function down(): void
     {
         Schema::table('animaux', function (Blueprint $table) {
-            $table->dropColumn(['carnet_vaccination', 'vaccin_a_jour', 'vermifuge_a_jour']);
+            $table->dropColumn(['age', 'poids', 'description']);
         });
     }
 };

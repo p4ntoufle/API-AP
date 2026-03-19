@@ -170,6 +170,16 @@
                 </li>
                 @auth
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('animaux') }}">
+                            <i class="fas fa-paw me-1"></i> Mes animaux
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('profil') }}">
+                            <i class="fas fa-user-edit me-1"></i> Mon profil
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('factures') }}">
                             <i class="fas fa-file-invoice me-1"></i> Vos factures
                         </a>

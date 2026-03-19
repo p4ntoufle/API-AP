@@ -7,72 +7,60 @@ use Illuminate\Http\Request;
 
 class AnimalController extends Controller
 {
-    // Liste tous les animaux (READ)
-    public function index()
+    public function index(Request $request)
     {
-        $animaux = Animaux::all();
+        $animaux = Animaux::where('user_id', $request->user()->id)->get();
         return response()->json($animaux);
     }
 
-    // Affiche un animal spécifique (READ)
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $animal = Animaux::find($id);
-
-        if (!$animal) {
-            return response()->json(['message' => 'Animal non trouvé'], 404);
-        }
-
+        $animal = Animaux::where('id', $id)->where('user_id', $request->user()->id)->first();
+        if (!$animal) return response()->json(['message' => 'Animal non trouvé'], 404);
         return response()->json($animal);
     }
 
-    // Crée un nouvel animal (CREATE)
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'espece' => 'required|string|max:255',
-            'age' => 'nullable|integer|min:0',
-            'description' => 'nullable|string'
+            'nom'                => 'required|string|max:255',
+            'espece'             => 'nullable|string|max:255',
+            'age'                => 'nullable|integer|min:0',
+            'poids'              => 'nullable|numeric|min:0',
+            'description'        => 'nullable|string',
+            'carnet_vaccination' => 'nullable|boolean',
+            'vaccin_a_jour'      => 'nullable|boolean',
+            'vermifuge_a_jour'   => 'nullable|boolean',
         ]);
-
+        $validated['user_id'] = $request->user()->id;
         $animal = Animaux::create($validated);
-
         return response()->json($animal, 201);
     }
 
-    // Met à jour un animal (UPDATE)
     public function update(Request $request, $id)
     {
-        $animal = Animaux::find($id);
-
-        if (!$animal) {
-            return response()->json(['message' => 'Animal non trouvé'], 404);
-        }
+        $animal = Animaux::where('id', $id)->where('user_id', $request->user()->id)->first();
+        if (!$animal) return response()->json(['message' => 'Animal non trouvé'], 404);
 
         $validated = $request->validate([
-            'nom' => 'sometimes|string|max:255',
-            'espece' => 'sometimes|string|max:255',
-            'age' => 'nullable|integer|min:0',
-            'description' => 'nullable|string'
+            'nom'                => 'sometimes|string|max:255',
+            'espece'             => 'nullable|string|max:255',
+            'age'                => 'nullable|integer|min:0',
+            'poids'              => 'nullable|numeric|min:0',
+            'description'        => 'nullable|string',
+            'carnet_vaccination' => 'nullable|boolean',
+            'vaccin_a_jour'      => 'nullable|boolean',
+            'vermifuge_a_jour'   => 'nullable|boolean',
         ]);
-
         $animal->update($validated);
-
         return response()->json($animal);
     }
 
-    // Supprime un animal (DELETE)
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $animal = Animaux::find($id);
-
-        if (!$animal) {
-            return response()->json(['message' => 'Animal non trouvé'], 404);
-        }
-
+        $animal = Animaux::where('id', $id)->where('user_id', $request->user()->id)->first();
+        if (!$animal) return response()->json(['message' => 'Animal non trouvé'], 404);
         $animal->delete();
-
         return response()->json(['message' => 'Animal supprimé avec succès']);
     }
 }
