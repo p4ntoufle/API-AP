@@ -12,12 +12,28 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FaSeController extends Controller
 {
     private string $invoiceDisk = 'local';
 
+    /**
+     * Lister les factures.
+     *
+     * @OA\Get(
+     *     path="/api/factures",
+     *     summary="Liste les factures (paginées)",
+     *     tags={"Factures"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=15)),
+     *     @OA\Parameter(name="user_id", in="query", required=false, @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="pension_id", in="query", required=false, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Liste paginée des factures"),
+     *     @OA\Response(response=401, description="Non authentifié")
+     * )
+     */
     public function index(Request $request)
     {
         $perPage = (int) $request->input('per_page', 15);
@@ -42,6 +58,39 @@ class FaSeController extends Controller
         );
     }
 
+    /**
+     * Créer une facture.
+     *
+     * @OA\Post(
+     *     path="/api/factures",
+     *     summary="Créer une nouvelle facture",
+     *     tags={"Factures"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"user_id","pension_id","numero","issued_at","stay_end_at"},
+     *                 @OA\Property(property="user_id", type="integer"),
+     *                 @OA\Property(property="pension_id", type="integer"),
+     *                 @OA\Property(property="numero", type="string"),
+     *                 @OA\Property(property="issued_at", type="string", format="date"),
+     *                 @OA\Property(property="stay_start_at", type="string", format="date"),
+     *                 @OA\Property(property="stay_end_at", type="string", format="date"),
+     *                 @OA\Property(property="animals_count", type="integer"),
+     *                 @OA\Property(property="total_ht", type="number"),
+     *                 @OA\Property(property="total_ttc", type="number"),
+     *                 @OA\Property(property="pdf", type="string", format="binary"),
+     *                 @OA\Property(property="pdf_path", type="string")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Facture créée"),
+     *     @OA\Response(response=401, description="Non authentifié"),
+     *     @OA\Response(response=422, description="Erreur de validation")
+     * )
+     */
     public function store(Request $request)
     {
         $validated = $this->validatePayload($request);
@@ -69,11 +118,55 @@ class FaSeController extends Controller
         return response()->json($facture->load(['pension', 'user']), 201);
     }
 
+    /**
+     * Afficher une facture.
+     *
+     * @OA\Get(
+     *     path="/api/factures/{facture}",
+     *     summary="Afficher une facture",
+     *     tags={"Factures"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="facture", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Détails de la facture"),
+     *     @OA\Response(response=401, description="Non authentifié"),
+     *     @OA\Response(response=404, description="Facture non trouvée")
+     * )
+     */
     public function show(Facture $facture)
     {
         return response()->json($facture->load(['pension', 'user']));
     }
 
+    /**
+     * Mettre à jour une facture.
+     *
+     * @OA\Put(
+     *     path="/api/factures/{facture}",
+     *     summary="Mettre à jour une facture",
+     *     tags={"Factures"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="facture", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user_id", type="integer"),
+     *             @OA\Property(property="pension_id", type="integer"),
+     *             @OA\Property(property="numero", type="string"),
+     *             @OA\Property(property="issued_at", type="string", format="date"),
+     *             @OA\Property(property="stay_start_at", type="string", format="date"),
+     *             @OA\Property(property="stay_end_at", type="string", format="date"),
+     *             @OA\Property(property="animals_count", type="integer"),
+     *             @OA\Property(property="total_ht", type="number"),
+     *             @OA\Property(property="total_ttc", type="number"),
+     *             @OA\Property(property="pdf_path", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Facture mise à jour"),
+     *     @OA\Response(response=401, description="Non authentifié"),
+     *     @OA\Response(response=404, description="Facture non trouvée"),
+     *     @OA\Response(response=422, description="Erreur de validation")
+     * )
+     */
     public function update(Request $request, Facture $facture)
     {
         $validated = $this->validatePayload($request, $facture);
@@ -100,6 +193,20 @@ class FaSeController extends Controller
         return response()->json($facture->fresh()->load(['pension', 'user']));
     }
 
+    /**
+     * Supprimer une facture.
+     *
+     * @OA\Delete(
+     *     path="/api/factures/{facture}",
+     *     summary="Supprimer une facture",
+     *     tags={"Factures"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="facture", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=204, description="Facture supprimée"),
+     *     @OA\Response(response=401, description="Non authentifié"),
+     *     @OA\Response(response=404, description="Facture non trouvée")
+     * )
+     */
     public function destroy(Facture $facture)
     {
         $this->deletePdf($facture->pdf_path);
@@ -108,6 +215,21 @@ class FaSeController extends Controller
         return response()->noContent();
     }
 
+    /**
+     * Télécharger le PDF d'une facture.
+     *
+     * @OA\Get(
+     *     path="/api/factures/{facture}/download",
+     *     summary="Télécharger le PDF d'une facture",
+     *     tags={"Factures"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="facture", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Fichier PDF"),
+     *     @OA\Response(response=401, description="Non authentifié"),
+     *     @OA\Response(response=403, description="Accès interdit"),
+     *     @OA\Response(response=404, description="Fichier introuvable")
+     * )
+     */
     public function download(Request $request, Facture $facture): StreamedResponse
     {
         $this->authorizeFactureAccess($request, $facture);
