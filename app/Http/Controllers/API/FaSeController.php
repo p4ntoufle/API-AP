@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Facture;
+use App\Models\Pension;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
@@ -34,28 +35,9 @@ class FaSeController extends Controller
      *     @OA\Response(response=401, description="Non authentifié")
      * )
      */
-    public function index(Request $request)
+    public function index()
     {
-        $perPage = (int) $request->input('per_page', 15);
-        $perPage = max(1, min($perPage, 100));
-
-        $query = Facture::with(['pension', 'user'])
-            ->orderByDesc('issued_at')
-            ->orderByDesc('created_at');
-
-        if ($request->filled('user_id')) {
-            $query->where('user_id', (int) $request->input('user_id'));
-        } elseif ($request->user()) {
-            $query->where('user_id', $request->user()->id);
-        }
-
-        if ($request->filled('pension_id')) {
-            $query->where('pension_id', (int) $request->input('pension_id'));
-        }
-
-        return response()->json(
-            $query->paginate($perPage)->withQueryString()
-        );
+        return response()->json(Facture::all());
     }
 
     /**

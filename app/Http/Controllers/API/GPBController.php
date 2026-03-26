@@ -16,7 +16,7 @@ class GPBController extends Controller
      *     path="/api/pensions",
      *     summary="Liste toutes les pensions",
      *     tags={"Pensions"},
-     *     @OA\Response(
+     *     @OA\Res3ponse(
      *         response=200,
      *         description="Liste des pensions",
      *         @OA\JsonContent(type="array", @OA\Items(
