@@ -64,4 +64,17 @@ class GAPController extends Controller
         $animal->delete();
         return response()->json(['message' => 'Animal supprimé avec succès']);
     }
+    public function proprietaires()
+    {
+        $users = \App\Models\User::with('animaux')->get();
+        return response()->json($users);
+    }
+
+    public function animauxProprietaire(Request $request, string $id)
+    {
+        $animaux = \App\Models\Animaux::where('user_id', $id)->get();
+        return response()->json($animaux);
+    }
 }
+
+

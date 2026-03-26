@@ -44,3 +44,7 @@ Route::put('/pensions/{id}/update', [GPBController::class, 'update']);
 /// ROUTES POUR LES FICHES ///
 Route::get('/fiches', [GPBController::class, 'show']);
 Route::put('/fiches/{fiche}', [GPBController::class, 'update']);
+
+/// Propriétaires (pour l'appli lourde pension) ///
+Route::get('/proprietaires', [App\Http\Controllers\API\GAPController::class, 'proprietaires']);
+Route::get('/proprietaires/{id}/animaux', [App\Http\Controllers\API\GAPController::class, 'animauxProprietaire']);
