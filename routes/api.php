@@ -31,11 +31,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/animaux/{id}', [AnimalController::class, 'destroy']);
 
     /// Factures ///
-    Route::get('/factures', [FaSeController::class, 'index']);
-    Route::get('/factures/{facture}/download', [FaSeController::class, 'download'])
-        ->name('api.factures.download');
-});
 
+Route::get('/factures', [FaSeController::class, 'index']);
+Route::get('/factures/{facture}/download', [FaSeController::class, 'download'])
+    ->name('api.factures.download');
+});
 /// ROUTES POUR LES PENSIONS ///
 Route::get('/pensions', [GPBController::class, 'index']);
 Route::post('/pensions', [GPBController::class, 'store']);

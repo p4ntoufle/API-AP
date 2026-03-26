@@ -5,14 +5,39 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pension;
-
-/// TODO: AJOUTER LE MODULE
+use OpenApi\Annotations as OA;
 
 class GPBController extends Controller
 {
     /**
      * Afficher la liste des pensions.
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Get(
+     *     path="/api/pensions",
+     *     summary="Liste toutes les pensions",
+     *     tags={"Pensions"},
+     *     @OA\Res3ponse(
+     *         response=200,
+     *         description="Liste des pensions",
+     *         @OA\JsonContent(type="array", @OA\Items(
+     *             @OA\Property(property="id", type="integer"),
+     *             @OA\Property(property="nom", type="string"),
+     *             @OA\Property(property="adresse", type="string"),
+     *             @OA\Property(property="ville", type="string"),
+     *             @OA\Property(property="region", type="string"),
+     *             @OA\Property(property="code_postal", type="string"),
+     *             @OA\Property(property="telephone", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="description", type="string"),
+     *             @OA\Property(property="capacite_chiens", type="integer"),
+     *             @OA\Property(property="capacite_chats", type="integer"),
+     *             @OA\Property(property="prix_chien_jour", type="number"),
+     *             @OA\Property(property="prix_chat_jour", type="number"),
+     *             @OA\Property(property="actif", type="boolean"),
+     *             @OA\Property(property="famille", type="boolean")
+     *         ))
+     *     )
+     * )
      */
     public function index()
     {
@@ -21,8 +46,38 @@ class GPBController extends Controller
 
     /**
      * Ajouter une pension.
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Post(
+     *     path="/api/pensions",
+     *     summary="Créer une nouvelle pension",
+     *     tags={"Pensions"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nom","adresse","ville","code_postal","actif"},
+     *             @OA\Property(property="nom", type="string"),
+     *             @OA\Property(property="adresse", type="string"),
+     *             @OA\Property(property="ville", type="string"),
+     *             @OA\Property(property="region", type="string"),
+     *             @OA\Property(property="code_postal", type="string"),
+     *             @OA\Property(property="telephone", type="string"),
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="description", type="string"),
+     *             @OA\Property(property="capacite_chiens", type="integer"),
+     *             @OA\Property(property="capacite_chats", type="integer"),
+     *             @OA\Property(property="directeur_nom", type="string"),
+     *             @OA\Property(property="directeur_email", type="string", format="email"),
+     *             @OA\Property(property="services", type="string"),
+     *             @OA\Property(property="horaires", type="string"),
+     *             @OA\Property(property="prix_chien_jour", type="number"),
+     *             @OA\Property(property="prix_chat_jour", type="number"),
+     *             @OA\Property(property="actif", type="boolean"),
+     *             @OA\Property(property="famille", type="boolean")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Pension créée avec succès"),
+     *     @OA\Response(response=422, description="Erreur de validation")
+     * )
      */
     public function store(Request $request)
     {
@@ -54,8 +109,15 @@ class GPBController extends Controller
 
     /**
      * Afficher la pension.
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Get(
+     *     path="/api/fiches",
+     *     summary="Afficher une fiche pension",
+     *     tags={"Pensions"},
+     *     @OA\Parameter(name="id", in="query", required=true, @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Détails de la pension"),
+     *     @OA\Response(response=404, description="Pension non trouvée")
+     * )
      */
     public function show(string $id)
     {
@@ -65,9 +127,40 @@ class GPBController extends Controller
 
     /**
      * Mettre à jour la pension.
-     * @param Request $request
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Put(
+     *     path="/api/pensions/{id}/update",
+     *     summary="Mettre à jour une pension",
+     *     tags={"Pensions"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nom","adresse","ville","code_postal","actif"},
+     *             @OA\Property(property="nom", type="string"),
+     *             @OA\Property(property="adresse", type="string"),
+     *             @OA\Property(property="ville", type="string"),
+     *             @OA\Property(property="region", type="string"),
+     *             @OA\Property(property="code_postal", type="string"),
+     *             @OA\Property(property="telephone", type="string"),
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="description", type="string"),
+     *             @OA\Property(property="capacite_chiens", type="integer"),
+     *             @OA\Property(property="capacite_chats", type="integer"),
+     *             @OA\Property(property="directeur_nom", type="string"),
+     *             @OA\Property(property="directeur_email", type="string", format="email"),
+     *             @OA\Property(property="services", type="string"),
+     *             @OA\Property(property="horaires", type="string"),
+     *             @OA\Property(property="prix_chien_jour", type="number"),
+     *             @OA\Property(property="prix_chat_jour", type="number"),
+     *             @OA\Property(property="actif", type="boolean"),
+     *             @OA\Property(property="famille", type="boolean")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Pension mise à jour"),
+     *     @OA\Response(response=404, description="Pension non trouvée"),
+     *     @OA\Response(response=422, description="Erreur de validation")
+     * )
      */
     public function update(Request $request, string $id)
     {
@@ -100,8 +193,15 @@ class GPBController extends Controller
 
     /**
      * Supprimer la pension.
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Delete(
+     *     path="/api/pensions/{id}",
+     *     summary="Supprimer une pension",
+     *     tags={"Pensions"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Pension supprimée"),
+     *     @OA\Response(response=404, description="Pension non trouvée")
+     * )
      */
     public function destroy(string $id)
     {

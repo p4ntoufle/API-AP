@@ -12,6 +12,845 @@
         }
     ],
     "paths": {
+        "/api/factures": {
+            "get": {
+                "tags": [
+                    "Factures"
+                ],
+                "summary": "Liste les factures (paginées)",
+                "description": "Lister les factures.",
+                "operationId": "dfc2108e35c6cc17947103581907b38c",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "pension_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste paginée des factures"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Factures"
+                ],
+                "summary": "Créer une nouvelle facture",
+                "description": "Créer une facture.",
+                "operationId": "3ee776bf558fdc128f70ba1cba4fc051",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "pension_id",
+                                    "numero",
+                                    "issued_at",
+                                    "stay_end_at"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "pension_id": {
+                                        "type": "integer"
+                                    },
+                                    "numero": {
+                                        "type": "string"
+                                    },
+                                    "issued_at": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "stay_start_at": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "stay_end_at": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "animals_count": {
+                                        "type": "integer"
+                                    },
+                                    "total_ht": {
+                                        "type": "number"
+                                    },
+                                    "total_ttc": {
+                                        "type": "number"
+                                    },
+                                    "pdf": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "pdf_path": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Facture créée"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/factures/{facture}": {
+            "get": {
+                "tags": [
+                    "Factures"
+                ],
+                "summary": "Afficher une facture",
+                "description": "Afficher une facture.",
+                "operationId": "8b0038ed248cf31e7c14dd52e36b467e",
+                "parameters": [
+                    {
+                        "name": "facture",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de la facture"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "404": {
+                        "description": "Facture non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Factures"
+                ],
+                "summary": "Mettre à jour une facture",
+                "description": "Mettre à jour une facture.",
+                "operationId": "8697bca7e1125d6687c502edd050d467",
+                "parameters": [
+                    {
+                        "name": "facture",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "pension_id": {
+                                        "type": "integer"
+                                    },
+                                    "numero": {
+                                        "type": "string"
+                                    },
+                                    "issued_at": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "stay_start_at": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "stay_end_at": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "animals_count": {
+                                        "type": "integer"
+                                    },
+                                    "total_ht": {
+                                        "type": "number"
+                                    },
+                                    "total_ttc": {
+                                        "type": "number"
+                                    },
+                                    "pdf_path": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Facture mise à jour"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "404": {
+                        "description": "Facture non trouvée"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Factures"
+                ],
+                "summary": "Supprimer une facture",
+                "description": "Supprimer une facture.",
+                "operationId": "da42c23a54624d9182d2cda0beeec1e6",
+                "parameters": [
+                    {
+                        "name": "facture",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Facture supprimée"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "404": {
+                        "description": "Facture non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/factures/{facture}/download": {
+            "get": {
+                "tags": [
+                    "Factures"
+                ],
+                "summary": "Télécharger le PDF d'une facture",
+                "description": "Télécharger le PDF d'une facture.",
+                "operationId": "f4f04f9565c1132b36aa55c308253dba",
+                "parameters": [
+                    {
+                        "name": "facture",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fichier PDF"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "403": {
+                        "description": "Accès interdit"
+                    },
+                    "404": {
+                        "description": "Fichier introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/pensions": {
+            "get": {
+                "tags": [
+                    "Pensions"
+                ],
+                "summary": "Liste toutes les pensions",
+                "description": "Afficher la liste des pensions.",
+                "operationId": "13b4dadf4d40aca6f413bb9fc4facde4",
+                "responses": {
+                    "200": {
+                        "description": "Liste des pensions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "nom": {
+                                                "type": "string"
+                                            },
+                                            "adresse": {
+                                                "type": "string"
+                                            },
+                                            "ville": {
+                                                "type": "string"
+                                            },
+                                            "region": {
+                                                "type": "string"
+                                            },
+                                            "code_postal": {
+                                                "type": "string"
+                                            },
+                                            "telephone": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            },
+                                            "capacite_chiens": {
+                                                "type": "integer"
+                                            },
+                                            "capacite_chats": {
+                                                "type": "integer"
+                                            },
+                                            "prix_chien_jour": {
+                                                "type": "number"
+                                            },
+                                            "prix_chat_jour": {
+                                                "type": "number"
+                                            },
+                                            "actif": {
+                                                "type": "boolean"
+                                            },
+                                            "famille": {
+                                                "type": "boolean"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Pensions"
+                ],
+                "summary": "Créer une nouvelle pension",
+                "description": "Ajouter une pension.",
+                "operationId": "afce2480fd88991cf54cee410999c69a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nom",
+                                    "adresse",
+                                    "ville",
+                                    "code_postal",
+                                    "actif"
+                                ],
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "adresse": {
+                                        "type": "string"
+                                    },
+                                    "ville": {
+                                        "type": "string"
+                                    },
+                                    "region": {
+                                        "type": "string"
+                                    },
+                                    "code_postal": {
+                                        "type": "string"
+                                    },
+                                    "telephone": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "capacite_chiens": {
+                                        "type": "integer"
+                                    },
+                                    "capacite_chats": {
+                                        "type": "integer"
+                                    },
+                                    "directeur_nom": {
+                                        "type": "string"
+                                    },
+                                    "directeur_email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "services": {
+                                        "type": "string"
+                                    },
+                                    "horaires": {
+                                        "type": "string"
+                                    },
+                                    "prix_chien_jour": {
+                                        "type": "number"
+                                    },
+                                    "prix_chat_jour": {
+                                        "type": "number"
+                                    },
+                                    "actif": {
+                                        "type": "boolean"
+                                    },
+                                    "famille": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pension créée avec succès"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            }
+        },
+        "/api/fiches": {
+            "get": {
+                "tags": [
+                    "Pensions"
+                ],
+                "summary": "Afficher une fiche pension",
+                "description": "Afficher la pension.",
+                "operationId": "83dda6411731447b1c54475af2f29d9f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de la pension"
+                    },
+                    "404": {
+                        "description": "Pension non trouvée"
+                    }
+                }
+            }
+        },
+        "/api/pensions/{id}/update": {
+            "put": {
+                "tags": [
+                    "Pensions"
+                ],
+                "summary": "Mettre à jour une pension",
+                "description": "Mettre à jour la pension.",
+                "operationId": "c529f23185411b4d597baaa4146586c4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nom",
+                                    "adresse",
+                                    "ville",
+                                    "code_postal",
+                                    "actif"
+                                ],
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "adresse": {
+                                        "type": "string"
+                                    },
+                                    "ville": {
+                                        "type": "string"
+                                    },
+                                    "region": {
+                                        "type": "string"
+                                    },
+                                    "code_postal": {
+                                        "type": "string"
+                                    },
+                                    "telephone": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "capacite_chiens": {
+                                        "type": "integer"
+                                    },
+                                    "capacite_chats": {
+                                        "type": "integer"
+                                    },
+                                    "directeur_nom": {
+                                        "type": "string"
+                                    },
+                                    "directeur_email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "services": {
+                                        "type": "string"
+                                    },
+                                    "horaires": {
+                                        "type": "string"
+                                    },
+                                    "prix_chien_jour": {
+                                        "type": "number"
+                                    },
+                                    "prix_chat_jour": {
+                                        "type": "number"
+                                    },
+                                    "actif": {
+                                        "type": "boolean"
+                                    },
+                                    "famille": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pension mise à jour"
+                    },
+                    "404": {
+                        "description": "Pension non trouvée"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            }
+        },
+        "/api/pensions/{id}": {
+            "delete": {
+                "tags": [
+                    "Pensions"
+                ],
+                "summary": "Supprimer une pension",
+                "description": "Supprimer la pension.",
+                "operationId": "fc871aad669fe0f85e1faefb9b29f3fd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pension supprimée"
+                    },
+                    "404": {
+                        "description": "Pension non trouvée"
+                    }
+                }
+            }
+        },
+        "/api/animaux": {
+            "get": {
+                "tags": [
+                    "Animaux"
+                ],
+                "summary": "Liste tous les animaux",
+                "description": "Liste tous les animaux.",
+                "operationId": "d496dbcdbcf748db0844c69ef81ae661",
+                "responses": {
+                    "200": {
+                        "description": "Liste des animaux",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "nom": {
+                                                "type": "string"
+                                            },
+                                            "espece": {
+                                                "type": "string"
+                                            },
+                                            "age": {
+                                                "type": "integer"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Animaux"
+                ],
+                "summary": "Créer un nouvel animal",
+                "description": "Créer un nouvel animal.",
+                "operationId": "54b9d8c5a44d56e004c3af14af90233c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nom",
+                                    "espece"
+                                ],
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "espece": {
+                                        "type": "string"
+                                    },
+                                    "age": {
+                                        "type": "integer"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Animal créé"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            }
+        },
+        "/api/animaux/{id}": {
+            "get": {
+                "tags": [
+                    "Animaux"
+                ],
+                "summary": "Afficher un animal",
+                "description": "Affiche un animal spécifique.",
+                "operationId": "149174fc569cdaab38e9d5d40b2be55f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de l'animal"
+                    },
+                    "404": {
+                        "description": "Animal non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Animaux"
+                ],
+                "summary": "Mettre à jour un animal",
+                "description": "Mettre à jour un animal.",
+                "operationId": "ecfcb64416585aad4543831fe971097f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "espece": {
+                                        "type": "string"
+                                    },
+                                    "age": {
+                                        "type": "integer"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Animal mis à jour"
+                    },
+                    "404": {
+                        "description": "Animal non trouvé"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Animaux"
+                ],
+                "summary": "Supprimer un animal",
+                "description": "Supprimer un animal.",
+                "operationId": "fa99a1a7be625bc1f404ed9d4f55c4fd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Animal supprimé"
+                    },
+                    "404": {
+                        "description": "Animal non trouvé"
+                    }
+                }
+            }
+        },
         "/api/auth/register": {
             "post": {
                 "tags": [
@@ -196,7 +1035,29 @@
             }
         }
     },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Entrez le token obtenu via /api/auth/login",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
     "tags": [
+        {
+            "name": "Factures",
+            "description": "Factures"
+        },
+        {
+            "name": "Pensions",
+            "description": "Pensions"
+        },
+        {
+            "name": "Animaux",
+            "description": "Animaux"
+        },
         {
             "name": "Auth",
             "description": "Auth"
