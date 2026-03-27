@@ -25,6 +25,7 @@ class AnimalController extends Controller
         $validated = $request->validate([
             'nom'                => 'required|string|max:255',
             'espece'             => 'nullable|string|max:255',
+            'race'               => 'nullable|string|max:255',
             'age'                => 'nullable|integer|min:0',
             'poids'              => 'nullable|numeric|min:0',
             'description'        => 'nullable|string',
@@ -45,6 +46,7 @@ class AnimalController extends Controller
         $validated = $request->validate([
             'nom'                => 'sometimes|string|max:255',
             'espece'             => 'nullable|string|max:255',
+            'race'               => 'nullable|string|max:255',
             'age'                => 'nullable|integer|min:0',
             'poids'              => 'nullable|numeric|min:0',
             'description'        => 'nullable|string',
