@@ -14,6 +14,7 @@ class Animaux extends Model
     protected $fillable = [
         'user_id',
         'nom',
+        'race',
         'espece',
         'age',
         'poids',
