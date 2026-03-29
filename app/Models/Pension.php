@@ -40,4 +40,14 @@ class Pension extends Model {
     {
         return $this->hasMany(Facture::class);
     }
+
+    public function boxes()
+    {
+        return $this->hasMany(Box::class);
+    }
+
+    public function typesGardiennage()
+    {
+        return $this->hasMany(TypeGardiennage::class);
+    }
 }

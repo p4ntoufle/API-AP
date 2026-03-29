@@ -36,14 +36,24 @@ Route::get('/factures', [FaSeController::class, 'index']);
 Route::get('/factures/{facture}/download', [FaSeController::class, 'download'])
     ->name('api.factures.download');
 });
-/// ROUTES POUR LES PENSIONS ///
+/// PENSIONS
 Route::get('/pensions', [GPBController::class, 'index']);
+Route::get('/pensions/{id}', [GPBController::class, 'show']);
 Route::post('/pensions', [GPBController::class, 'store']);
-Route::put('/pensions/{id}/update', [GPBController::class, 'update']);
+Route::put('/pensions/{id}', [GPBController::class, 'update']);
+Route::delete('/pensions/{id}', [GPBController::class, 'destroy']);
 
-/// ROUTES POUR LES FICHES ///
-Route::get('/fiches', [GPBController::class, 'show']);
-Route::put('/fiches/{fiche}', [GPBController::class, 'update']);
+/// BOXES
+Route::get('/pensions/{id}/boxes', [GPBController::class, 'getBoxes']);
+Route::post('/pensions/{id}/boxes', [GPBController::class, 'storeBox']);
+Route::put('/boxes/{id}', [GPBController::class, 'updateBox']);
+Route::delete('/boxes/{id}', [GPBController::class, 'deleteBox']);
+
+/// TYPES DE GARDIENNAGE
+Route::get('/pensions/{id}/types-gardiennage', [GPBController::class, 'getTypesGardiennage']);
+Route::post('/pensions/{id}/types-gardiennage', [GPBController::class, 'storeTypeGardiennage']);
+Route::put('/types-gardiennage/{id}', [GPBController::class, 'updateTypeGardiennage']);
+Route::delete('/types-gardiennage/{id}', [GPBController::class, 'deleteTypeGardiennage']);
 
 /// Propriétaires (pour l'appli lourde pension) ///
 Route::get('/proprietaires', [App\Http\Controllers\API\GAPController::class, 'proprietaires']);
