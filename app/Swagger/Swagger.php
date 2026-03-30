@@ -24,6 +24,50 @@ use OpenApi\Annotations as OA;
  *     bearerFormat="JWT",
  *     description="Entrez le token obtenu via /api/auth/login"
  * )
+ *
+ * @OA\Schema(
+ *     schema="Pension",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="user_id", type="integer"),
+ *     @OA\Property(property="ville", type="string"),
+ *     @OA\Property(property="adresse", type="string"),
+ *     @OA\Property(property="telephone", type="string"),
+ *     @OA\Property(property="responsable", type="string"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ *
+ * @OA\Schema(
+ *     schema="Box",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="pension_id", type="integer"),
+ *     @OA\Property(property="superficie", type="number", format="float"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ *
+ * @OA\Schema(
+ *     schema="TypeGardiennage",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="pension_id", type="integer"),
+ *     @OA\Property(property="libelle", type="string"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ *
+ * @OA\Schema(
+ *     schema="Tarif",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="pension_id", type="integer"),
+ *     @OA\Property(property="type_gardiennage_id", type="integer"),
+ *     @OA\Property(property="prix", type="number", format="float"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
  */
 class Swagger
 {

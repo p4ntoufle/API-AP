@@ -338,8 +338,7 @@
                 "tags": [
                     "Pensions"
                 ],
-                "summary": "Liste toutes les pensions",
-                "description": "Afficher la liste des pensions.",
+                "summary": "Récupérer toutes les pensions",
                 "operationId": "13b4dadf4d40aca6f413bb9fc4facde4",
                 "responses": {
                     "200": {
@@ -349,54 +348,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer"
-                                            },
-                                            "nom": {
-                                                "type": "string"
-                                            },
-                                            "adresse": {
-                                                "type": "string"
-                                            },
-                                            "ville": {
-                                                "type": "string"
-                                            },
-                                            "region": {
-                                                "type": "string"
-                                            },
-                                            "code_postal": {
-                                                "type": "string"
-                                            },
-                                            "telephone": {
-                                                "type": "string"
-                                            },
-                                            "email": {
-                                                "type": "string"
-                                            },
-                                            "description": {
-                                                "type": "string"
-                                            },
-                                            "capacite_chiens": {
-                                                "type": "integer"
-                                            },
-                                            "capacite_chats": {
-                                                "type": "integer"
-                                            },
-                                            "prix_chien_jour": {
-                                                "type": "number"
-                                            },
-                                            "prix_chat_jour": {
-                                                "type": "number"
-                                            },
-                                            "actif": {
-                                                "type": "boolean"
-                                            },
-                                            "famille": {
-                                                "type": "boolean"
-                                            }
-                                        },
-                                        "type": "object"
+                                        "$ref": "#/components/schemas/Pension"
                                     }
                                 }
                             }
@@ -408,8 +360,7 @@
                 "tags": [
                     "Pensions"
                 ],
-                "summary": "Créer une nouvelle pension",
-                "description": "Ajouter une pension.",
+                "summary": "Créer une pension",
                 "operationId": "afce2480fd88991cf54cee410999c69a",
                 "requestBody": {
                     "required": true,
@@ -455,29 +406,7 @@
                                     "capacite_chats": {
                                         "type": "integer"
                                     },
-                                    "directeur_nom": {
-                                        "type": "string"
-                                    },
-                                    "directeur_email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "services": {
-                                        "type": "string"
-                                    },
-                                    "horaires": {
-                                        "type": "string"
-                                    },
-                                    "prix_chien_jour": {
-                                        "type": "number"
-                                    },
-                                    "prix_chat_jour": {
-                                        "type": "number"
-                                    },
                                     "actif": {
-                                        "type": "boolean"
-                                    },
-                                    "famille": {
                                         "type": "boolean"
                                     }
                                 },
@@ -488,141 +417,14 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Pension créée avec succès"
-                    },
-                    "422": {
-                        "description": "Erreur de validation"
-                    }
-                }
-            }
-        },
-        "/api/fiches": {
-            "get": {
-                "tags": [
-                    "Pensions"
-                ],
-                "summary": "Afficher une fiche pension",
-                "description": "Afficher la pension.",
-                "operationId": "83dda6411731447b1c54475af2f29d9f",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Détails de la pension"
-                    },
-                    "404": {
-                        "description": "Pension non trouvée"
-                    }
-                }
-            }
-        },
-        "/api/pensions/{id}/update": {
-            "put": {
-                "tags": [
-                    "Pensions"
-                ],
-                "summary": "Mettre à jour une pension",
-                "description": "Mettre à jour la pension.",
-                "operationId": "c529f23185411b4d597baaa4146586c4",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "nom",
-                                    "adresse",
-                                    "ville",
-                                    "code_postal",
-                                    "actif"
-                                ],
-                                "properties": {
-                                    "nom": {
-                                        "type": "string"
-                                    },
-                                    "adresse": {
-                                        "type": "string"
-                                    },
-                                    "ville": {
-                                        "type": "string"
-                                    },
-                                    "region": {
-                                        "type": "string"
-                                    },
-                                    "code_postal": {
-                                        "type": "string"
-                                    },
-                                    "telephone": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "description": {
-                                        "type": "string"
-                                    },
-                                    "capacite_chiens": {
-                                        "type": "integer"
-                                    },
-                                    "capacite_chats": {
-                                        "type": "integer"
-                                    },
-                                    "directeur_nom": {
-                                        "type": "string"
-                                    },
-                                    "directeur_email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "services": {
-                                        "type": "string"
-                                    },
-                                    "horaires": {
-                                        "type": "string"
-                                    },
-                                    "prix_chien_jour": {
-                                        "type": "number"
-                                    },
-                                    "prix_chat_jour": {
-                                        "type": "number"
-                                    },
-                                    "actif": {
-                                        "type": "boolean"
-                                    },
-                                    "famille": {
-                                        "type": "boolean"
-                                    }
-                                },
-                                "type": "object"
+                        "description": "Pension créée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pension"
+                                }
                             }
                         }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Pension mise à jour"
-                    },
-                    "404": {
-                        "description": "Pension non trouvée"
                     },
                     "422": {
                         "description": "Erreur de validation"
@@ -631,12 +433,88 @@
             }
         },
         "/api/pensions/{id}": {
+            "get": {
+                "tags": [
+                    "Pensions"
+                ],
+                "summary": "Afficher une pension",
+                "operationId": "22a0fb1be97756ae1878353e4ef035c1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pension trouvée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pension"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pension non trouvée"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Pensions"
+                ],
+                "summary": "Mettre à jour une pension",
+                "operationId": "b681ff30cb18c9133c8716095be265fd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Pension"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pension mise à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pension"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pension non trouvée"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            },
             "delete": {
                 "tags": [
                     "Pensions"
                 ],
                 "summary": "Supprimer une pension",
-                "description": "Supprimer la pension.",
                 "operationId": "fc871aad669fe0f85e1faefb9b29f3fd",
                 "parameters": [
                     {
@@ -644,7 +522,7 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -658,75 +536,67 @@
                 }
             }
         },
-        "/api/animaux": {
+        "/api/pensions/{id}/boxes": {
             "get": {
                 "tags": [
-                    "Animaux"
+                    "Boxes"
                 ],
-                "summary": "Liste tous les animaux",
-                "description": "Liste tous les animaux.",
-                "operationId": "d496dbcdbcf748db0844c69ef81ae661",
+                "summary": "Récupérer les boxes d'une pension",
+                "operationId": "5f436488d6e904f8c49df4a720c9f589",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Liste des animaux",
+                        "description": "Boxes récupérées",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer"
-                                            },
-                                            "nom": {
-                                                "type": "string"
-                                            },
-                                            "espece": {
-                                                "type": "string"
-                                            },
-                                            "age": {
-                                                "type": "integer"
-                                            },
-                                            "description": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object"
+                                        "$ref": "#/components/schemas/Box"
                                     }
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "Pension non trouvée"
                     }
                 }
             },
             "post": {
                 "tags": [
-                    "Animaux"
+                    "Boxes"
                 ],
-                "summary": "Créer un nouvel animal",
-                "description": "Créer un nouvel animal.",
-                "operationId": "54b9d8c5a44d56e004c3af14af90233c",
+                "summary": "Créer une box",
+                "operationId": "b1f8b823140216a1e4558deb2900016e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "nom",
-                                    "espece"
-                                ],
                                 "properties": {
-                                    "nom": {
-                                        "type": "string"
-                                    },
-                                    "espece": {
-                                        "type": "string"
-                                    },
-                                    "age": {
-                                        "type": "integer"
-                                    },
-                                    "description": {
-                                        "type": "string"
+                                    "superficie": {
+                                        "type": "number",
+                                        "format": "float"
                                     }
                                 },
                                 "type": "object"
@@ -736,7 +606,17 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Animal créé"
+                        "description": "Box créée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Box"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pension non trouvée"
                     },
                     "422": {
                         "description": "Erreur de validation"
@@ -744,40 +624,13 @@
                 }
             }
         },
-        "/api/animaux/{id}": {
-            "get": {
-                "tags": [
-                    "Animaux"
-                ],
-                "summary": "Afficher un animal",
-                "description": "Affiche un animal spécifique.",
-                "operationId": "149174fc569cdaab38e9d5d40b2be55f",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Détails de l'animal"
-                    },
-                    "404": {
-                        "description": "Animal non trouvé"
-                    }
-                }
-            },
+        "/api/boxes/{id}": {
             "put": {
                 "tags": [
-                    "Animaux"
+                    "Boxes"
                 ],
-                "summary": "Mettre à jour un animal",
-                "description": "Mettre à jour un animal.",
-                "operationId": "ecfcb64416585aad4543831fe971097f",
+                "summary": "Mettre à jour une box",
+                "operationId": "db6d9618b7321fbc46e943e1ac0a2b1a",
                 "parameters": [
                     {
                         "name": "id",
@@ -794,17 +647,9 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "nom": {
-                                        "type": "string"
-                                    },
-                                    "espece": {
-                                        "type": "string"
-                                    },
-                                    "age": {
-                                        "type": "integer"
-                                    },
-                                    "description": {
-                                        "type": "string"
+                                    "superficie": {
+                                        "type": "number",
+                                        "format": "float"
                                     }
                                 },
                                 "type": "object"
@@ -814,10 +659,17 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Animal mis à jour"
+                        "description": "Box mise à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Box"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Animal non trouvé"
+                        "description": "Box non trouvée"
                     },
                     "422": {
                         "description": "Erreur de validation"
@@ -826,11 +678,10 @@
             },
             "delete": {
                 "tags": [
-                    "Animaux"
+                    "Boxes"
                 ],
-                "summary": "Supprimer un animal",
-                "description": "Supprimer un animal.",
-                "operationId": "fa99a1a7be625bc1f404ed9d4f55c4fd",
+                "summary": "Supprimer une box",
+                "operationId": "9a48e315b513442740cec77fa98e0b0f",
                 "parameters": [
                     {
                         "name": "id",
@@ -843,199 +694,455 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Animal supprimé"
+                        "description": "Box supprimée"
                     },
                     "404": {
-                        "description": "Animal non trouvé"
+                        "description": "Box non trouvée"
                     }
                 }
             }
         },
-        "/api/auth/register": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Register a new user",
-                "operationId": "d764dd091cc4494ae0baf360b03319f3",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Utilisiateur inscrit",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "type": "object"
-                                        },
-                                        "token": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Erreur de validation des données"
-                    }
-                }
-            }
-        },
-        "/api/auth/login": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Login a user",
-                "operationId": "8dcb70df1020986038d098cc08d05dae",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Utilisateur connecté",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "type": "object"
-                                        },
-                                        "token": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Mauvais Identifiants"
-                    }
-                }
-            }
-        },
-        "/api/auth/logout": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Logout a user",
-                "operationId": "69281b12abb272c76871f19cb17ca563",
-                "responses": {
-                    "200": {
-                        "description": "Déconnecté",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            }
-        },
-        "/api/auth/me": {
+        "/api/pensions/{id}/types-gardiennage": {
             "get": {
                 "tags": [
-                    "Auth"
+                    "Types de Gardiennage"
                 ],
-                "summary": "Get current authenticated user",
-                "operationId": "b9abb1a7a74670a19c215c2c133f14d8",
+                "summary": "Récupérer les types de gardiennage d'une pension",
+                "operationId": "db3fdd5bab300bb07aac36954da55476",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Infos du profil utilisateur",
+                        "description": "Types de gardiennage récupérés",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        },
-                                        "email": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TypeGardiennage"
+                                    }
                                 }
                             }
                         }
                     },
-                    "401": {
-                        "description": "Non authentifié"
+                    "404": {
+                        "description": "Pension non trouvée"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Types de Gardiennage"
+                ],
+                "summary": "Créer un type de gardiennage",
+                "operationId": "26c0b1eb80774ead512fe458a2286ef2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "libelle": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
                     }
                 },
-                "security": [
-                    {
-                        "sanctum": []
+                "responses": {
+                    "201": {
+                        "description": "Type de gardiennage créé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TypeGardiennage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pension non trouvée"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
                     }
-                ]
+                }
+            }
+        },
+        "/api/types-gardiennage/{id}": {
+            "put": {
+                "tags": [
+                    "Types de Gardiennage"
+                ],
+                "summary": "Mettre à jour un type de gardiennage",
+                "operationId": "9928ad5b1d3dbb3eb942828ee794525a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "libelle": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Type de gardiennage mis à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TypeGardiennage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Type de gardiennage non trouvé"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Types de Gardiennage"
+                ],
+                "summary": "Supprimer un type de gardiennage",
+                "operationId": "2847486e7ab0b91ac01c70243bc6efd2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Type de gardiennage supprimé"
+                    },
+                    "404": {
+                        "description": "Type de gardiennage non trouvé"
+                    }
+                }
+            }
+        },
+        "/api/pensions/{id}/tarifs": {
+            "get": {
+                "tags": [
+                    "Tarifs"
+                ],
+                "summary": "Récupérer les tarifs d'une pension",
+                "operationId": "5956ae18f22e69a8e89333c7c76df935",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tarifs récupérés",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Tarif"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pension non trouvée"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Tarifs"
+                ],
+                "summary": "Créer un tarif",
+                "operationId": "82ea94d80487344c7f04ce9bd7821463",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type_gardiennage_id": {
+                                        "type": "integer"
+                                    },
+                                    "prix": {
+                                        "type": "number",
+                                        "format": "float"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tarif créé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tarif"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pension non trouvée"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            }
+        },
+        "/api/tarifs/{id}": {
+            "put": {
+                "tags": [
+                    "Tarifs"
+                ],
+                "summary": "Mettre à jour un tarif",
+                "operationId": "622629806515dbedaac8ccd12812ddd6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "prix": {
+                                        "type": "number",
+                                        "format": "float"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tarif mis à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tarif"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tarif non trouvé"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tarifs"
+                ],
+                "summary": "Supprimer un tarif",
+                "operationId": "98cbb30271755b081bef38e0a079283f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tarif supprimé"
+                    },
+                    "404": {
+                        "description": "Tarif non trouvé"
+                    }
+                }
             }
         }
     },
     "components": {
+        "schemas": {
+            "Pension": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "ville": {
+                        "type": "string"
+                    },
+                    "adresse": {
+                        "type": "string"
+                    },
+                    "telephone": {
+                        "type": "string"
+                    },
+                    "responsable": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Box": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "pension_id": {
+                        "type": "integer"
+                    },
+                    "superficie": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "TypeGardiennage": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "pension_id": {
+                        "type": "integer"
+                    },
+                    "libelle": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Tarif": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "pension_id": {
+                        "type": "integer"
+                    },
+                    "type_gardiennage_id": {
+                        "type": "integer"
+                    },
+                    "prix": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
         "securitySchemes": {
             "sanctum": {
                 "type": "http",
@@ -1055,12 +1162,16 @@
             "description": "Pensions"
         },
         {
-            "name": "Animaux",
-            "description": "Animaux"
+            "name": "Boxes",
+            "description": "Boxes"
         },
         {
-            "name": "Auth",
-            "description": "Auth"
+            "name": "Types de Gardiennage",
+            "description": "Types de Gardiennage"
+        },
+        {
+            "name": "Tarifs",
+            "description": "Tarifs"
         }
     ]
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Pension;
 use App\Models\Box;
 use App\Models\TypeGardiennage;
+use App\Models\Tarif;
 use OpenApi\Annotations as OA;
 
 class GPBController extends Controller
@@ -92,7 +93,7 @@ class GPBController extends Controller
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/PensionUpdate")
+     *         @OA\JsonContent(ref="#/components/schemas/Pension")
      *     ),
      *     @OA\Response(response=200, description="Pension mise à jour", @OA\JsonContent(ref="#/components/schemas/Pension")),
      *     @OA\Response(response=404, description="Pension non trouvée"),
@@ -309,6 +310,98 @@ class GPBController extends Controller
         $typeGardiennage = TypeGardiennage::findOrFail($id);
         $typeGardiennage->delete();
         return response()->json(['message' => 'Type de gardiennage supprimé']);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/pensions/{id}/tarifs",
+     *     summary="Récupérer les tarifs d'une pension",
+     *     tags={"Tarifs"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Tarifs récupérés", @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Tarif"))),
+     *     @OA\Response(response=404, description="Pension non trouvée")
+     * )
+     */
+    public function getTarifs($id)
+    {
+        $pension = Pension::findOrFail($id);
+        return response()->json($pension->tarifs()->with('typeGardiennage')->get());
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/pensions/{id}/tarifs",
+     *     summary="Créer un tarif",
+     *     tags={"Tarifs"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="type_gardiennage_id", type="integer"),
+     *             @OA\Property(property="prix", type="number", format="float")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Tarif créé", @OA\JsonContent(ref="#/components/schemas/Tarif")),
+     *     @OA\Response(response=404, description="Pension non trouvée"),
+     *     @OA\Response(response=422, description="Erreur de validation")
+     * )
+     */
+    public function storeTarif(Request $request, $id)
+    {
+        $pension = Pension::findOrFail($id);
+        $validated = $request->validate([
+            'type_gardiennage_id' => 'required|integer|exists:type_gardiennages,id',
+            'prix' => 'required|numeric|min:0',
+        ]);
+
+        $validated['pension_id'] = $pension->id;
+        $tarif = Tarif::create($validated);
+        return response()->json($tarif, 201);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/tarifs/{id}",
+     *     summary="Mettre à jour un tarif",
+     *     tags={"Tarifs"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="prix", type="number", format="float")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Tarif mis à jour", @OA\JsonContent(ref="#/components/schemas/Tarif")),
+     *     @OA\Response(response=404, description="Tarif non trouvé"),
+     *     @OA\Response(response=422, description="Erreur de validation")
+     * )
+     */
+    public function updateTarif(Request $request, $id)
+    {
+        $tarif = Tarif::findOrFail($id);
+        $validated = $request->validate([
+            'prix' => 'required|numeric|min:0',
+        ]);
+
+        $tarif->update($validated);
+        return response()->json($tarif);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/tarifs/{id}",
+     *     summary="Supprimer un tarif",
+     *     tags={"Tarifs"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Tarif supprimé"),
+     *     @OA\Response(response=404, description="Tarif non trouvé")
+     * )
+     */
+    public function deleteTarif($id)
+    {
+        $tarif = Tarif::findOrFail($id);
+        $tarif->delete();
+        return response()->json(['message' => 'Tarif supprimé']);
     }
 }
 
