@@ -73,24 +73,11 @@ class GPBController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nom' => 'required|string|max:255',
+            'user_id' => 'nullable|integer|exists:users,id',
+            'ville' => 'required|string|max:255',
             'adresse' => 'required|string|max:255',
-            'ville' => 'required|string|max:100',
-            'region' => 'nullable|string|max:100',
-            'code_postal' => 'required|string|max:20',
-            'telephone' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
-            'description' => 'nullable|string',
-            'capacite_chiens' => 'nullable|integer|min:0',
-            'capacite_chats' => 'nullable|integer|min:0',
-            'directeur_nom' => 'nullable|string|max:255',
-            'directeur_email' => 'nullable|email|max:255',
-            'services' => 'nullable|string',
-            'horaires' => 'nullable|string',
-            'prix_chien_jour' => 'nullable|numeric|min:0',
-            'prix_chat_jour' => 'nullable|numeric|min:0',
-            'actif' => 'required|boolean',
-            'famille' => 'nullable|boolean',
+            'telephone' => 'required|string|max:20',
+            'responsable' => 'nullable|string|max:255',
         ]);
 
         $pension = Pension::create($validated);
@@ -116,24 +103,11 @@ class GPBController extends Controller
     {
         $pension = Pension::findOrFail($id);
         $validated = $request->validate([
-            'nom' => 'required|string|max:255',
+            'user_id' => 'nullable|integer|exists:users,id',
+            'ville' => 'required|string|max:255',
             'adresse' => 'required|string|max:255',
-            'ville' => 'required|string|max:100',
-            'region' => 'nullable|string|max:100',
-            'code_postal' => 'required|string|max:20',
-            'telephone' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
-            'description' => 'nullable|string',
-            'capacite_chiens' => 'nullable|integer|min:0',
-            'capacite_chats' => 'nullable|integer|min:0',
-            'directeur_nom' => 'nullable|string|max:255',
-            'directeur_email' => 'nullable|email|max:255',
-            'services' => 'nullable|string',
-            'horaires' => 'nullable|string',
-            'prix_chien_jour' => 'nullable|numeric|min:0',
-            'prix_chat_jour' => 'nullable|numeric|min:0',
-            'actif' => 'required|boolean',
-            'famille' => 'nullable|boolean',
+            'telephone' => 'required|string|max:20',
+            'responsable' => 'nullable|string|max:255',
         ]);
 
         $pension->update($validated);

@@ -148,45 +148,70 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-lg-center">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('pensions') }}">
-                        <i class="fas fa-home me-1"></i> Nos pensions
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('services') }}">
-                        <i class="fas fa-concierge-bell me-1"></i> Services
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('horaires') }}">
-                        <i class="fas fa-clock me-1"></i> Horaires
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('contact') }}">
-                        <i class="fas fa-envelope me-1"></i> Contact
-                    </a>
-                </li>
                 @auth
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('animaux') }}">
-                            <i class="fas fa-paw me-1"></i> Mes animaux
-                        </a>
-                    </li>
+                    @if(auth()->user()->pension)
+                        <!-- Navigation pour les pensions connectées -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pension.dashboard') }}">
+                                <i class="fas fa-home me-1"></i> Accueil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pension.types-gardiennage') }}">
+                                <i class="fas fa-home me-1"></i> Types d'hébergement
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pension.tarifs') }}">
+                                <i class="fas fa-tag me-1"></i> Tarifs
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pension.boxes') }}">
+                                <i class="fas fa-cube me-1"></i> Boxes
+                            </a>
+                        </li>
+                    @else
+                        <!-- Navigation pour les propriétaires d'animaux -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pensions') }}">
+                                <i class="fas fa-home me-1"></i> Nos pensions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('services') }}">
+                                <i class="fas fa-concierge-bell me-1"></i> Services
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('horaires') }}">
+                                <i class="fas fa-clock me-1"></i> Horaires
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('contact') }}">
+                                <i class="fas fa-envelope me-1"></i> Contact
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('animaux') }}">
+                                <i class="fas fa-paw me-1"></i> Mes animaux
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('factures') }}">
+                                <i class="fas fa-file-invoice me-1"></i> Vos factures
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('fiches') }}">
+                                <i class="fas fa-file-alt me-1"></i> Vos fiches
+                            </a>
+                        </li>
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('profil') }}">
                             <i class="fas fa-user-edit me-1"></i> Mon profil
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('factures') }}">
-                            <i class="fas fa-file-invoice me-1"></i> Vos factures
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('fiches') }}">
-                            <i class="fas fa-file-alt me-1"></i> Vos fiches
                         </a>
                     </li>
                     <li class="nav-item d-none d-lg-block">
@@ -203,6 +228,27 @@
                         </form>
                     </li>
                 @else
+                    <!-- Navigation pour les visiteurs -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('pensions') }}">
+                            <i class="fas fa-home me-1"></i> Nos pensions
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('services') }}">
+                            <i class="fas fa-concierge-bell me-1"></i> Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('horaires') }}">
+                            <i class="fas fa-clock me-1"></i> Horaires
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('contact') }}">
+                            <i class="fas fa-envelope me-1"></i> Contact
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="btn btn-login" href="{{ route('login') }}">
                             <i class="fas fa-sign-in-alt me-1"></i> Connexion

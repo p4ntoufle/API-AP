@@ -351,45 +351,41 @@
                                 <div class="pension-details">
                                     <div class="detail-item">
                                         <i class="fas fa-map-marked-alt"></i>
-                                        <span>{{ $pension->adresse }}</span>
+                                        <span>{{ $pension->adresse ?? 'N/A' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-city"></i>
+                                        <span>{{ $pension->ville ?? 'N/A' }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <i class="fas fa-phone"></i>
-                                        <a href="tel:{{ $pension->telephone }}">{{ $pension->telephone }}</a>
+                                        <a href="tel:{{ $pension->telephone }}">{{ $pension->telephone ?? 'N/A' }}</a>
                                     </div>
-                                    <div class="detail-item">
-                                        <i class="fas fa-envelope"></i>
-                                        <a href="mailto:{{ $pension->email }}">{{ $pension->email }}</a>
-                                    </div>
-                                    @if($pension->directeur_nom)
+                                    @if($pension->responsable)
                                         <div class="detail-item">
                                             <i class="fas fa-user-tie"></i>
-                                            <span>{{ $pension->directeur_nom }}</span>
+                                            <span>{{ $pension->responsable }}</span>
                                         </div>
                                     @endif
                                 </div>
 
-                                <!-- Services -->
-                                @if($pension->services)
-                                    <div class="services-tags">
-                                        @foreach($pension->services_array as $service)
-                                            <span class="service-tag">{{ trim($service) }}</span>
-                                        @endforeach
-                                    </div>
-                                @endif
-
-                                <!-- Footer with price -->
+                                <!-- Footer with action button -->
                                 <div class="pension-footer">
-                                    @if($pension->prix_chien_jour)
-                                        <div class="price-info">
-                                            <span class="price">{{ number_format($pension->prix_chien_jour, 2) }}€</span>
-                                            <span class="price-label">par jour/chien</span>
-                                        </div>
-                                    @endif
-                                    <a href="mailto:{{ $pension->email }}" class="btn-contact">
-                                        <i class="fas fa-envelope"></i>
-                                        Contact
-                                    </a>
+                                    @auth
+                                        @if(auth()->user()->pension && auth()->user()->pension->id === $pension->id)
+                                            <a href="{{ route('pension.dashboard') }}" class="btn-contact" style="background: #52b788;">
+                                                <i class="fas fa-chart-line"></i> Mon Dashboard
+                                            </a>
+                                        @else
+                                            <a href="{{ route('contact') }}" class="btn-contact">
+                                                <i class="fas fa-envelope"></i> Nous contacter
+                                            </a>
+                                        @endif
+                                    @else
+                                        <a href="{{ route('login') }}" class="btn-contact">
+                                            <i class="fas fa-sign-in-alt"></i> Connexion Pension
+                                        </a>
+                                    @endauth
                                 </div>
                             </div>
                         </div>

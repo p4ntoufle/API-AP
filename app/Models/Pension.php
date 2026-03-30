@@ -11,29 +11,21 @@ class Pension extends Model {
      * @var list<string>
      */
     protected $fillable = [
-        'adresse',
+        'user_id',
         'ville',
-        'region',
-        'code_postal',
+        'adresse',
         'telephone',
-        'email',
-        'description',
-        'capacite_chiens',
-        'capacite_chats',
-        'image',
-        'directeur_nom',
-        'directeur_mail',
-        'services',
-        'horaires',
-        'prix_chien_jour',
-        'prix_chat_jour',
-        'actif',
-        'famille'
+        'responsable'
     ];
 
     public function users()
     {
         return $this->belongsToMany(User::class, 'factures', 'pension_id', 'user_id')->distinct();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function factures()
@@ -49,5 +41,10 @@ class Pension extends Model {
     public function typesGardiennage()
     {
         return $this->hasMany(TypeGardiennage::class);
+    }
+
+    public function tarifs()
+    {
+        return $this->hasMany(Tarif::class);
     }
 }

@@ -52,10 +52,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Pension::class, 'factures', 'user_id', 'pension_id')->distinct();
     }
 
+    public function pension()
+    {
+        return $this->hasOne(Pension::class);
+    }
+
     public function factures()
     {
         return $this->hasMany(Facture::class);
     }
+
     public function animaux()
     {
         return $this->hasMany(Animaux::class, 'user_id');
