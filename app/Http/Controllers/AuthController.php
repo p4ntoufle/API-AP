@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use App\Mail\VerifyEmailMail;
+use Illuminate\Support\Facades\Mail;
 use OpenApi\Annotations as OA;
 
 class AuthController extends Controller
@@ -41,17 +44,27 @@ class AuthController extends Controller
             'password' => ['required', 'min:6']
         ]);
 
+        // Générer un token de vérification unique
+        $verificationToken = Str::random(60);
+
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password'])
+            'password' => Hash::make($data['password']),
+            'email_verification_token' => $verificationToken
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // Générer l'URL de vérification
+        $verificationUrl = config('app.url') . '/api/auth/verify-email/' . $verificationToken;
+
+        // Envoyer l'email de vérification
+        Mail::send(new VerifyEmailMail($user, $verificationUrl));
+
         return response()->json([
+            'message' => 'Inscription réussie. Veuillez vérifier votre email pour activer votre compte.',
             'user' => $user,
-            'token' => $token
-        ]);
+            'email_verification_required' => true
+        ], 201);
     }
 
     /**
@@ -92,6 +105,14 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Mauvais Identifiants'
             ], 401);
+        }
+
+        // Vérifier si l'email a été confirmé
+        if (!$user->email_verified_at) {
+            return response()->json([
+                'message' => 'Veuillez vérifier votre email avant de vous connecter',
+                'email_verified' => false
+            ], 403);
         }
 
         $token = $user->createToken('api_token')->plainTextToken;
@@ -169,4 +190,108 @@ class AuthController extends Controller
 
         return response()->json($user);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/auth/verify-email/{token}",
+     *     summary="Vérifier l'adresse email avec un token",
+     *     tags={"Auth"},
+     *     @OA\Parameter(
+     *         name="token",
+     *         in="path",
+     *         required=true,
+     *         description="Token de vérification d'email",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Email vérifié avec succès",
+     *         @OA\JsonContent(@OA\Property(property="message", type="string"), @OA\Property(property="user", ref="#/components/schemas/User"), @OA\Property(property="token", type="string"))
+     *     ),
+     *     @OA\Response(response=400, description="Token invalide ou expiré")
+     * )
+     */
+    public function verifyEmail($token) {
+        // Chercher l'utilisateur avec ce token
+        $user = User::where('email_verification_token', $token)->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Token de vérification invalide ou expiré'
+            ], 400);
+        }
+
+        // Vérifier que l'email n'a pas déjà été vérifié
+        if ($user->email_verified_at) {
+            return response()->json([
+                'message' => 'Cet email a déjà été vérifié'
+            ], 400);
+        }
+
+        // Marquer l'email comme vérifié
+        $user->update([
+            'email_verified_at' => now(),
+            'email_verification_token' => null
+        ]);
+
+        // Créer un token Sanctum pour la session
+        $authToken = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Email vérifié avec succès',
+            'user' => $user,
+            'token' => $authToken
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/auth/resend-verification-email",
+     *     summary="Renvoyer l'email de vérification",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email"},
+     *             @OA\Property(property="email", type="string", format="email", example="john@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Email de vérification renvoyé",
+     *         @OA\JsonContent(@OA\Property(property="message", type="string"))
+     *     ),
+     *     @OA\Response(response=404, description="Utilisateur non trouvé"),
+     *     @OA\Response(response=400, description="Email déjà vérifié")
+     * )
+     */
+    public function resendVerificationEmail(Request $request) {
+        $data = $request->validate([
+            'email' => ['required', 'email', 'exists:users']
+        ]);
+
+        $user = User::where('email', $data['email'])->first();
+
+        // Vérifier si l'email est déjà vérifié
+        if ($user->email_verified_at) {
+            return response()->json([
+                'message' => 'Cet email a déjà été vérifié'
+            ], 400);
+        }
+
+        // Générer un nouveau token
+        $verificationToken = Str::random(60);
+        $user->update(['email_verification_token' => $verificationToken]);
+
+        // Générer l'URL de vérification
+        $verificationUrl = config('app.url') . '/api/auth/verify-email/' . $verificationToken;
+
+        // Envoyer l'email de vérification
+        Mail::send(new VerifyEmailMail($user, $verificationUrl));
+
+        return response()->json([
+            'message' => 'Email de vérification renvoyé avec succès'
+        ]);
+    }
 }
+

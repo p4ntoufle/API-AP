@@ -14,6 +14,7 @@ Route::get('/factures', [SiteController::class, 'factures'])->name('factures');
 
 Route::get('/login', [SiteController::class, 'showLogin'])->name('login')->middleware('guest');
 Route::post('/login', [SiteController::class, 'login']);
+Route::get('/register', [SiteController::class, 'showRegister'])->name('register')->middleware('guest');
 Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {

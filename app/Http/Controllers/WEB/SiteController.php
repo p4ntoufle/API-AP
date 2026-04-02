@@ -67,6 +67,11 @@ class SiteController extends Controller
         return view('login');
     }
 
+    public function showRegister()
+    {
+        return view('register');
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([

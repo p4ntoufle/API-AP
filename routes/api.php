@@ -9,6 +9,9 @@ use App\Http\Controllers\EspeceController;
 
 /// INSCRIPTION ///
 Route::post('/auth/register', [AuthController::class, 'register']);
+/// VÉRIFICATION EMAIL ///
+Route::get('/auth/verify-email/{token}', [AuthController::class, 'verifyEmail']);
+Route::post('/auth/resend-verification-email', [AuthController::class, 'resendVerificationEmail']);
 /// CONNEXION ///
 Route::post('/auth/login', [AuthController::class, 'login']);
 
