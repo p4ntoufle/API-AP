@@ -59,6 +59,10 @@ fi
 echo "[$(date +'%Y-%m-%d %H:%M:%S')] Creating storage symlink..."
 php artisan storage:link --force || true
 
+echo "[$(date +'%Y-%m-%d %H:%M:%S')] Setting storage permissions..."
+chown -R www-data:www-data /var/www/storage
+chmod -R 775 /var/www/storage
+
 echo "[$(date +'%Y-%m-%d %H:%M:%S')] Clearing application cache..."
 php artisan cache:clear
 
