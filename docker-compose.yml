@@ -1,19 +1,36 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
     container_name: laravel_app
+    restart: unless-stopped
     ports:
       - '9000:9000'
     volumes:
       - .:/var/www/html
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=MiseAuVert
+      - DB_USERNAME=miseauvert
+      - DB_PASSWORD=miseauvert
     networks:
       - infra_net
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm-healthcheck || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   nginx:
     image: nginx:alpine
     container_name: laravel_nginx
+    restart: unless-stopped
     ports:
       - '80:80'
     volumes:
@@ -22,13 +39,20 @@ services:
     networks:
       - infra_net
     depends_on:
-      - app
-      - phpmyadmin
+      app:
+        condition: service_healthy
+      phpmyadmin:
+        condition: service_started
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   db:
-    image: mariadb
+    image: mariadb:latest
     container_name: mysql_db
-    restart: always
+    restart: unless-stopped
     ports:
       - "3306:3306"
     environment:
@@ -40,23 +64,41 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - infra_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
-    restart: always
+    restart: unless-stopped
     ports:
       - '8081:80'
     environment:
       PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: root
+      PMA_USER: miseauvert
+      PMA_PASSWORD: miseauvert
+      PMA_ROOT_PASSWORD: root
     networks:
       - infra_net
     depends_on:
       - db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   infra_net:
+    driver: bridge
 
 volumes:
   db_data:
