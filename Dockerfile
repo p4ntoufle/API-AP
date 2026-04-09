@@ -1,6 +1,6 @@
 FROM php:8.2-fpm AS builder
 
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
@@ -21,9 +21,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     intl \
     bcmath \
     soap \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
     && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY . /var/www/html
+COPY . /var/www
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer install --no-dev --optimize-autoloader --no-interaction --no-progress --prefer-dist
@@ -31,7 +33,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # ==================== Stage 2: Production ====================
 FROM php:8.2-fpm AS production
 
-# Install only runtime libraries needed in production
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev \
     libjpeg-dev \
@@ -47,6 +48,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     intl \
     bcmath \
     soap \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
     && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Download and install php-fpm health check script
@@ -54,34 +57,32 @@ RUN curl -o /usr/local/bin/php-fpm-healthcheck \
     https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck \
     && chmod +x /usr/local/bin/php-fpm-healthcheck
 
-# Copy the initialization script
+# Copy the entrypoint script
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Use the recommended production PHP configuration
+# Use production PHP config
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-# Copy PHP extensions from the builder stage
+# Copy PHP extensions from builder
 COPY --from=builder /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 COPY --from=builder /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 COPY --from=builder /usr/local/bin/docker-php-ext-* /usr/local/bin/
 
-# Copy the application code and dependencies from the build stage
-COPY --from=builder /var/www/html /var/www/html
+# Copy application from builder
+COPY --from=builder /var/www /var/www
 
-# Set working directory
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # Ensure correct permissions
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www
 
-# Switch to the non-privileged user to run the application
 USER www-data
 
-# Change the default command to run the entrypoint script
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-# Expose port 9000 and start php-fpm server
 EXPOSE 9000
+
 CMD ["php-fpm"]
+
 
