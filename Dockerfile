@@ -69,6 +69,9 @@ COPY --from=builder /var/www /var/www
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+# Copy PHP-FPM configuration (listen on TCP 9000)
+COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
+
 WORKDIR /var/www
 
 # Ensure correct permissions (but before switching to www-data)
