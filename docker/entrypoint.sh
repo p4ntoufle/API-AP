@@ -10,6 +10,12 @@ DB_USERNAME=${DB_USERNAME:-miseauvert}
 DB_PASSWORD=${DB_PASSWORD:-miseauvert}
 DB_DATABASE=${DB_DATABASE:-MiseAuVert}
 
+# Generate APP_KEY if not present
+if ! grep -q "APP_KEY=" /var/www/.env 2>/dev/null || grep -q "APP_KEY=$" /var/www/.env; then
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')] Generating APP_KEY..."
+  php artisan key:generate --force
+fi
+
 # Wait for database to be ready
 MAX_RETRIES=30
 RETRY_COUNT=0
