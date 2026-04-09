@@ -45,6 +45,7 @@ services:
       DB_PASSWORD: miseauvert
     volumes:
       - .:/var/www
+      - /var/www/vendor
     networks:
       - infra_net
     depends_on:
