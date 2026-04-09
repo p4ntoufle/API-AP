@@ -39,6 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libzip-dev \
     libonig-dev \
+    libicu-dev \
     procps \
     && docker-php-ext-install -j$(nproc) \
     pdo_mysql \
