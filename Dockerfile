@@ -41,6 +41,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libzip-dev \
     libonig-dev \
     libicu-dev \
+    libxml2-dev \
     procps \
     && docker-php-ext-install -j$(nproc) \
     pdo_mysql \
