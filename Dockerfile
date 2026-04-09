@@ -39,7 +39,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libzip-dev \
     libonig-dev \
-    libfcgi-bin \
     procps \
     && docker-php-ext-install -j$(nproc) \
     pdo_mysql \
@@ -52,15 +51,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-enable redis \
     && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Download and install php-fpm health check script
-RUN curl -o /usr/local/bin/php-fpm-healthcheck \
-    https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck \
-    && chmod +x /usr/local/bin/php-fpm-healthcheck
-
-# Copy the entrypoint script
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
 # Use production PHP config
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
@@ -72,12 +62,19 @@ COPY --from=builder /usr/local/bin/docker-php-ext-* /usr/local/bin/
 # Copy application from builder
 COPY --from=builder /var/www /var/www
 
+# Copy the entrypoint script (needs to be executable by root first)
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 WORKDIR /var/www
 
-# Ensure correct permissions
-RUN chown -R www-data:www-data /var/www
+# Ensure correct permissions (but before switching to www-data)
+RUN chown -R www-data:www-data /var/www && \
+    find /var/www -type f -exec chmod 644 {} \; && \
+    find /var/www -type d -exec chmod 755 {} \;
 
-USER www-data
+# Don't switch to www-data - let entrypoint handle setup as root, then php-fpm switches
+# USER www-data
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
