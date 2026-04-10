@@ -1,23 +1,13 @@
 <script>
-    // Ajouter le token auth à toutes les requêtes fetch
-    const originalFetch = window.fetch;
-    window.fetch = function(...args) {
-        const token = localStorage.getItem('auth_token');
-        if (token && args[1]) {
-            args[1].headers = args[1].headers || {};
-            args[1].headers['Authorization'] = `Bearer ${token}`;
-        }
-        return originalFetch.apply(this, args);
-    };
-
+    // Les cookies de session sont automatiquement envoyés avec les requêtes
+    // Pas besoin de Bearer tokens
+    
     // Exposer le user globalement
-    window.authUser = () => JSON.parse(localStorage.getItem('user') || '{}');
-    window.isAuthenticated = () => !!localStorage.getItem('auth_token');
+    window.authUser = () => @json(Auth::user());
+    window.isAuthenticated = () => @json(Auth::check());
 
     // Logout helper
     window.logout = () => {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user');
-        window.location.href = '{{ route("login") }}';
+        document.querySelector('form[action="{{ route("logout") }}"]')?.submit();
     };
 </script>

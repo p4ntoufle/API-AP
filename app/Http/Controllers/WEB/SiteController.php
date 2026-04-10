@@ -85,25 +85,19 @@ class SiteController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $credentials['email'])->first();
-        
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            return response()->json(['error' => 'Identifiants invalides'], 401);
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            
+            if (!$user->email_verified_at) {
+                Auth::logout();
+                return response()->json(['error' => 'Veuillez vérifier votre email avant de vous connecter'], 403);
+            }
+
+            $request->session()->regenerate();
+            return response()->json(['message' => 'Connexion réussie', 'user' => $user], 200);
         }
 
-        if (!$user->email_verified_at) {
-            return response()->json(['error' => 'Veuillez vérifier votre email avant de vous connecter'], 403);
-        }
-
-        // Générer un token Sanctum
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Connexion réussie',
-            'token' => $token,
-            'user' => $user,
-            'redirect' => '/'
-        ]);
+        return response()->json(['error' => 'Identifiants invalides'], 401);
     }
 
     public function logout(Request $request)
