@@ -65,6 +65,9 @@ class SiteController extends Controller
 
     public function showLogin()
     {
+        // Force session creation to generate CSRF token and session cookie
+        session()->put('_init', true);
+        
         \Log::info('Login page accessed - Current URL: ' . url()->current());
         \Log::info('APP_URL: ' . config('app.url'));
         return view('login');
@@ -78,8 +81,6 @@ class SiteController extends Controller
     public function login(Request $request)
     {
         try {
-            \Log::info('Login attempt', ['email' => $request->email]);
-            
             $credentials = $request->validate([
                 'email'    => 'required|email',
                 'password' => 'required',
@@ -89,24 +90,20 @@ class SiteController extends Controller
             $user = User::where('email', $credentials['email'])->first();
             
             if (!$user || !Hash::check($credentials['password'], $user->password)) {
-                \Log::warning('Invalid credentials', ['email' => $credentials['email']]);
                 return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
             }
 
             // Vérifier si l'email est vérifié
             if (!$user->email_verified_at) {
-                \Log::warning('Email not verified', ['email' => $credentials['email']]);
                 return back()->withErrors(['email' => 'Veuillez vérifier votre email avant de vous connecter'])->onlyInput('email');
             }
 
             // Authentifier l'utilisateur
             Auth::login($user);
             $request->session()->regenerate();
-            \Log::info('User logged in successfully', ['user_id' => $user->id, 'email' => $user->email]);
             
             return redirect('/')->with('success', 'Connexion réussie');
         } catch (\Exception $e) {
-            \Log::error('Login error', ['error' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             return response('ERROR: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine(), 500);
         }
     }

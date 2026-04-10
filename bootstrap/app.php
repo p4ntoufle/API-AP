@@ -18,13 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Add custom middleware globally
         $middleware->append(\App\Http\Middleware\FixUrl::class);
         
-        // Add session and cookie middlewares to web group
-        $middleware->appendToGroup('web', \Illuminate\Cookie\Middleware\EncryptCookies::class);
-        $middleware->appendToGroup('web', \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class);
-        $middleware->appendToGroup('web', \Illuminate\Session\Middleware\StartSession::class);
-        $middleware->appendToGroup('web', \Illuminate\View\Middleware\ShareErrorsFromSession::class);
-        
-        // API middleware group configuration - add Sanctum stateful middleware
+        // API middleware group configuration - ONLY Sanctum, NO cookies
         $middleware->group('api', [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
