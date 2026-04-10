@@ -19,6 +19,7 @@ class PensionCompleteSeeder extends Seeder
             [
                 'name' => 'Pension Paris',
                 'password' => Hash::make('password'),
+                'email_verified_at' => now(),
             ]
         );
 
@@ -70,6 +71,7 @@ class PensionCompleteSeeder extends Seeder
             [
                 'name' => 'Pension Lyon',
                 'password' => Hash::make('password'),
+                'email_verified_at' => now(),
             ]
         );
 
@@ -113,6 +115,7 @@ class PensionCompleteSeeder extends Seeder
             [
                 'name' => 'Pension Marseille',
                 'password' => Hash::make('password'),
+                'email_verified_at' => now(),
             ]
         );
 

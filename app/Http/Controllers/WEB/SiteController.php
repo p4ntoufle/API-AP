@@ -18,6 +18,10 @@ class SiteController extends Controller
 {
     public function home()
     {
+        // Si l'utilisateur est connecté, rediriger vers le dashboard pension
+        if (Auth::check()) {
+            return redirect()->route('pension.dashboard');
+        }
         return view('home');
     }
 
@@ -78,6 +82,30 @@ class SiteController extends Controller
         return view('register');
     }
 
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::create([
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'email_verified_at' => now(), // Auto-verify for web registration
+        ]);
+
+        // Authentifie simplement
+        Auth::login($user);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Inscription réussie et connecté !', 'user' => $user], 201);
+        }
+
+        return redirect()->route('home')->with('success', 'Inscription réussie et connecté !');
+    }
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -85,19 +113,33 @@ class SiteController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            
-            if (!$user->email_verified_at) {
-                Auth::logout();
-                return response()->json(['error' => 'Veuillez vérifier votre email avant de vous connecter'], 403);
-            }
+        // Cherche l'utilisateur par email
+        $user = User::where('email', $credentials['email'])->first();
 
-            $request->session()->regenerate();
-            return response()->json(['message' => 'Connexion réussie', 'user' => $user], 200);
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Identifiants invalides'], 401);
+            }
+            return back()->withErrors(['email' => 'Identifiants invalides'])->withInput();
         }
 
-        return response()->json(['error' => 'Identifiants invalides'], 401);
+        if (!$user->email_verified_at) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Veuillez vérifier votre email avant de vous connecter'], 403);
+            }
+            return back()->withErrors(['email' => 'Veuillez vérifier votre email avant de vous connecter'])->withInput();
+        }
+
+        // Authentifie simplement avec la session
+        Auth::login($user);
+
+        \Log::info('User logged in', ['user_id' => $user->id, 'email' => $user->email]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Connexion réussie', 'user' => $user], 200);
+        }
+
+        return redirect()->route('home')->with('success', 'Connexion réussie');
     }
 
     public function logout(Request $request)
@@ -105,7 +147,7 @@ class SiteController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('home');
+        return redirect()->route('home')->with('success', 'Déconnexion réussie');
     }
 
     // ─── GAP : Gestion des Animaux et des Propriétaires ───────────────────────

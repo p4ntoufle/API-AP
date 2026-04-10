@@ -5,25 +5,25 @@ use App\Http\Controllers\Api\FaSeController as FactureController;
 use App\Http\Controllers\Web\SiteController;
 use Illuminate\Support\Facades\Route;
 
-// Web routes - MINIMAL middleware for debugging
-Route::middleware([
-    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-    \Illuminate\Session\Middleware\StartSession::class,
-    \Illuminate\Routing\Middleware\SubstituteBindings::class,
-])->group(function () {
-    Route::get('/', [SiteController::class, 'home'])->name('home');
-    Route::get('/pensions', [SiteController::class, 'pensions'])->name('pensions');
-    Route::get('/contact', [SiteController::class, 'contact'])->name('contact');
-    Route::get('/horaires', [SiteController::class, 'horaires'])->name('horaires');
-    Route::get('/services', [SiteController::class, 'services'])->name('services');
-    Route::get('/factures', [SiteController::class, 'factures'])->name('factures');
+// Routes publiques - sans authentification
+Route::get('/', [SiteController::class, 'home'])->name('home');
+Route::get('/pensions', [SiteController::class, 'pensions'])->name('pensions');
+Route::get('/contact', [SiteController::class, 'contact'])->name('contact');
+Route::get('/horaires', [SiteController::class, 'horaires'])->name('horaires');
+Route::get('/services', [SiteController::class, 'services'])->name('services');
 
-    Route::get('/login', [SiteController::class, 'showLogin'])->name('login')->middleware('guest');
+// Routes d'authentification
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [SiteController::class, 'showLogin'])->name('login');
     Route::post('/login', [SiteController::class, 'login']);
-    Route::get('/register', [SiteController::class, 'showRegister'])->name('register')->middleware('guest');
-    Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
+    Route::get('/register', [SiteController::class, 'showRegister'])->name('register');
+    Route::post('/register', [SiteController::class, 'register']);
+});
 
-    Route::middleware('auth')->group(function () {
+// Routes protégées (sessions PHP traditionnelles)
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
+    Route::get('/factures', [SiteController::class, 'factures'])->name('factures');
         /// GPB — Pension Dashboard ///
         Route::get('/pension/dashboard', [SiteController::class, 'pensionDashboard'])->name('pension.dashboard');
         Route::get('/pension/edit', [SiteController::class, 'pensionEdit'])->name('pension.edit');
@@ -69,5 +69,4 @@ Route::middleware([
     /// GPB — Fiches (pour compatibilité) ///
     Route::get('/fiches', [SiteController::class, 'fiches'])->name('fiches');
     Route::put('/fiches/{fiche}', [GPBController::class, 'update'])->name('fiches.update');
-    });
 });

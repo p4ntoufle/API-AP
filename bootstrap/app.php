@@ -18,9 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // Add custom middleware globally
         $middleware->append(\App\Http\Middleware\FixUrl::class);
         
-        // API middleware group configuration - ONLY Sanctum, NO cookies
+        // API middleware group configuration - Sanctum ONLY for API
         $middleware->group('api', [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);

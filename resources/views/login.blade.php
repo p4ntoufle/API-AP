@@ -198,6 +198,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
                         'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
                     },
                     credentials: 'same-origin',
@@ -212,7 +213,7 @@
                 }
 
                 // La session est automatiquement créée par Laravel
-                window.location.href = '/pension/dashboard';
+                window.location.href = '/';
             } catch (error) {
                 console.error('Erreur:', error);
                 alert('Erreur de connexion');
