@@ -5,13 +5,9 @@ use App\Http\Controllers\Api\FaSeController as FactureController;
 use App\Http\Controllers\Web\SiteController;
 use Illuminate\Support\Facades\Route;
 
-// Web routes with session and CSRF middleware
+// Web routes - MINIMAL middleware for debugging
 Route::middleware([
-    \Illuminate\Cookie\Middleware\EncryptCookies::class,
-    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
     \Illuminate\Session\Middleware\StartSession::class,
-    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-    \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
     \Illuminate\Routing\Middleware\SubstituteBindings::class,
 ])->group(function () {
     Route::get('/', [SiteController::class, 'home'])->name('home');
