@@ -77,55 +77,32 @@ class SiteController extends Controller
 
     public function login(Request $request)
     {
-        \Log::info('=== LOGIN START ===');
-        \Log::info('Request method: ' . $request->method());
-        \Log::info('Request path: ' . $request->path());
-        \Log::info('Request URL: ' . $request->url());
-        
-        $credentials = $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
+        try {
+            $credentials = $request->validate([
+                'email'    => 'required|email',
+                'password' => 'required',
+            ]);
 
-        \Log::info('Credentials validated', ['email' => $credentials['email']]);
+            // Vérifier les identifiants
+            $user = User::where('email', $credentials['email'])->first();
+            
+            if (!$user || !Hash::check($credentials['password'], $user->password)) {
+                return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
+            }
 
-        // Vérifier les identifiants
-        $user = User::where('email', $credentials['email'])->first();
-        
-        \Log::info('User lookup result', ['found' => $user ? 'yes' : 'no']);
-        
-        if (!$user) {
-            \Log::warning('User not found');
-            return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
+            // Vérifier si l'email est vérifié
+            if (!$user->email_verified_at) {
+                return back()->withErrors(['email' => 'Veuillez vérifier votre email avant de vous connecter'])->onlyInput('email');
+            }
+
+            // Authentifier l'utilisateur
+            Auth::login($user);
+            $request->session()->regenerate();
+            
+            return redirect('/')->with('success', 'Connexion réussie');
+        } catch (\Exception $e) {
+            return response('ERROR: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine(), 500);
         }
-
-        $passwordMatch = Hash::check($credentials['password'], $user->password);
-        \Log::info('Password check', ['match' => $passwordMatch ? 'yes' : 'no']);
-        
-        if (!$passwordMatch) {
-            \Log::warning('Password incorrect');
-            return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
-        }
-
-        // Vérifier si l'email est vérifié
-        \Log::info('Email verified status', ['verified' => $user->email_verified_at ? 'yes' : 'no']);
-        
-        if (!$user->email_verified_at) {
-            \Log::warning('Email not verified');
-            return back()->withErrors(['email' => 'Veuillez vérifier votre email avant de vous connecter'])->onlyInput('email');
-        }
-
-        // Authentifier l'utilisateur
-        \Log::info('About to authenticate user', ['id' => $user->id, 'email' => $user->email]);
-        Auth::login($user);
-        $request->session()->regenerate();
-        
-        \Log::info('User authenticated successfully', ['id' => Auth::id()]);
-        
-        $redirectResponse = redirect('/');
-        \Log::info('Redirect response created', ['status' => $redirectResponse->status()]);
-        
-        return $redirectResponse->with('success', 'Connexion réussie');
     }
 
     public function logout(Request $request)
