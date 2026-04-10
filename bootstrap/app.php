@@ -15,10 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // Trust all proxies for reverse proxy scenarios
         $middleware->trustProxies(at: '*');
         
-        // Exclude CSRF check from login endpoint temporarily for debugging
-        $middleware->validateCsrfTokens(except: [
-            'login',
-        ]);
+        // Add custom middleware
+        $middleware->append(\App\Http\Middleware\FixUrl::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
