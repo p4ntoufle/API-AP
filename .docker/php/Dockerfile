@@ -58,10 +58,8 @@ COPY . .
 # Install dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Generate APP_KEY if not present in .env
-RUN if ! grep -q "APP_KEY=" .env 2>/dev/null || grep -q "APP_KEY=$" .env; then \
-  php artisan key:generate --force; \
-fi
+# Generate APP_KEY
+RUN php artisan key:generate --force || echo "Warning: APP_KEY generation skipped (likely no .env file yet)"
 
 RUN chown -R www-data:www-data /var/www
 
