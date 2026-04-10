@@ -42,6 +42,8 @@ services:
       DB_DATABASE: MiseAuVert
       DB_USERNAME: miseauvert
       DB_PASSWORD: miseauvert
+    ports:
+      - "9000:9000"
     volumes:
       - .:/var/www:cached
       - /var/www/vendor
@@ -53,20 +55,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
-  nginx:
-    image: nginx:alpine
-    container_name: laravel_nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    volumes:
-      - .:/var/www
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-    networks:
-      - infra_net
-    depends_on:
-      - app
 
   phpmyadmin:
     image: phpmyadmin:latest
