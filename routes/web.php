@@ -5,23 +5,32 @@ use App\Http\Controllers\Api\FaSeController as FactureController;
 use App\Http\Controllers\Web\SiteController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [SiteController::class, 'home'])->name('home');
-Route::get('/pensions', [SiteController::class, 'pensions'])->name('pensions');
-Route::get('/contact', [SiteController::class, 'contact'])->name('contact');
-Route::get('/horaires', [SiteController::class, 'horaires'])->name('horaires');
-Route::get('/services', [SiteController::class, 'services'])->name('services');
-Route::get('/factures', [SiteController::class, 'factures'])->name('factures');
+// Web routes with session and CSRF middleware
+Route::middleware([
+    \Illuminate\Cookie\Middleware\EncryptCookies::class,
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+    \Illuminate\Routing\Middleware\SubstituteBindings::class,
+])->group(function () {
+    Route::get('/', [SiteController::class, 'home'])->name('home');
+    Route::get('/pensions', [SiteController::class, 'pensions'])->name('pensions');
+    Route::get('/contact', [SiteController::class, 'contact'])->name('contact');
+    Route::get('/horaires', [SiteController::class, 'horaires'])->name('horaires');
+    Route::get('/services', [SiteController::class, 'services'])->name('services');
+    Route::get('/factures', [SiteController::class, 'factures'])->name('factures');
 
-Route::get('/login', [SiteController::class, 'showLogin'])->name('login')->middleware('guest');
-Route::post('/login', [SiteController::class, 'login']);
-Route::get('/register', [SiteController::class, 'showRegister'])->name('register')->middleware('guest');
-Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
+    Route::get('/login', [SiteController::class, 'showLogin'])->name('login')->middleware('guest');
+    Route::post('/login', [SiteController::class, 'login']);
+    Route::get('/register', [SiteController::class, 'showRegister'])->name('register')->middleware('guest');
+    Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
 
-Route::middleware('auth')->group(function () {
-    /// GPB — Pension Dashboard ///
-    Route::get('/pension/dashboard', [SiteController::class, 'pensionDashboard'])->name('pension.dashboard');
-    Route::get('/pension/edit', [SiteController::class, 'pensionEdit'])->name('pension.edit');
-    Route::put('/pension', [SiteController::class, 'pensionUpdate'])->name('pension.update');
+    Route::middleware('auth')->group(function () {
+        /// GPB — Pension Dashboard ///
+        Route::get('/pension/dashboard', [SiteController::class, 'pensionDashboard'])->name('pension.dashboard');
+        Route::get('/pension/edit', [SiteController::class, 'pensionEdit'])->name('pension.edit');
+        Route::put('/pension', [SiteController::class, 'pensionUpdate'])->name('pension.update');
 
     /// GPB — Types de Gardiennage ///
     Route::get('/pension/types-gardiennage', [SiteController::class, 'pensionTypesGardiennage'])->name('pension.types-gardiennage');
@@ -57,11 +66,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/animaux/{id}', [SiteController::class, 'animalDestroy'])->name('animaux.destroy');
 
     /// GAP — Profil ///
-    /// GAP — Profil ///
     Route::get('/profil', [SiteController::class, 'profil'])->name('profil');
     Route::put('/profil', [SiteController::class, 'profilUpdate'])->name('profil.update');
 
     /// GPB — Fiches (pour compatibilité) ///
     Route::get('/fiches', [SiteController::class, 'fiches'])->name('fiches');
     Route::put('/fiches/{fiche}', [GPBController::class, 'update'])->name('fiches.update');
+    });
 });
