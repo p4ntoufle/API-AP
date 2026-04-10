@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Trust all proxies for reverse proxy scenarios
         $middleware->trustProxies(at: '*');
+        
+        // Exclude CSRF check from login endpoint temporarily for debugging
+        $middleware->validateCsrfTokens(except: [
+            'login',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
