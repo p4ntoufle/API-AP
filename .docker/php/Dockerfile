@@ -1,11 +1,11 @@
 FROM php:8.4-fpm
 
-COPY php.ini /usr/local/etc/php/
-COPY docker.conf /usr/local/etc/php-fpm.d/docker.conf
-COPY .bashrc /root/
+COPY .docker/php/php.ini /usr/local/etc/php/
+COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY .docker/php/.bashrc /root/
 
 # Copy the entrypoint script
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY .docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # mix
@@ -51,6 +51,14 @@ RUN git clone https://github.com/seebi/dircolors-solarized
 
 EXPOSE 5173
 WORKDIR /var/www
+
+# Copy application files
+COPY . .
+
+# Install dependencies
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
+RUN chown -R www-data:www-data /var/www
 
 #entrypoint
 ENTRYPOINT ["entrypoint.sh"]
