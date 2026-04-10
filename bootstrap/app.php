@@ -18,15 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
         // Add custom middleware globally
         $middleware->append(\App\Http\Middleware\FixUrl::class);
         
-        // Apply session middleware to web routes
-        $middleware->web(function ($middleware) {
-            $middleware->append(\Illuminate\Cookie\Middleware\EncryptCookies::class);
-            $middleware->append(\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class);
-            $middleware->append(\Illuminate\Session\Middleware\StartSession::class);
-            $middleware->append(\Illuminate\View\Middleware\ShareErrorsFromSession::class);
-            $middleware->append(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
-            $middleware->append(\Illuminate\Routing\Middleware\SubstituteBindings::class);
-        });
+        // Prepend session and cookie middlewares to web group
+        $middleware->prependToGroup('web', [
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        ]);
         
         // API middleware group configuration - add Sanctum stateful middleware
         $middleware->group('api', [
