@@ -18,6 +18,6 @@
     window.logout = () => {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('user');
-        window.location.href = '{{ route("showLogin") }}';
+        window.location.href = '{{ route("login") }}';
     };
 </script>
