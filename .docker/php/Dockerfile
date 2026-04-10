@@ -5,7 +5,7 @@ COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY .docker/php/.bashrc /root/
 
 # Copy the entrypoint script
-COPY .docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # mix
