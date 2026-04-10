@@ -18,9 +18,17 @@ class SiteController extends Controller
 {
     public function home()
     {
-        // Si l'utilisateur est connecté, rediriger vers le dashboard pension
+        // Si l'utilisateur est connecté, rediriger vers son dashboard approprié
         if (Auth::check()) {
-            return redirect()->route('pension.dashboard');
+            $user = Auth::user();
+            
+            // Si c'est une pension (a une pension associée), rediriger vers le dashboard pension
+            if ($user->pension) {
+                return redirect()->route('pension.dashboard');
+            }
+            
+            // Sinon c'est un propriétaire, rediriger vers son profil/animaux
+            return redirect()->route('profil');
         }
         return view('home');
     }
