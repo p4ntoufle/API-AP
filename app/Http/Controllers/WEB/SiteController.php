@@ -80,12 +80,23 @@ class SiteController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->intended(route('home'))->with('success', 'Connexion réussie');
+        // Vérifier les identifiants localement
+        $user = User::where('email', $credentials['email'])->first();
+        
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
         }
 
-        return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
+        // Vérifier si l'email est vérifié
+        if (!$user->email_verified_at) {
+            return back()->withErrors(['email' => 'Veuillez vérifier votre email avant de vous connecter'])->onlyInput('email');
+        }
+
+        // Authentifier avec Session (pas Sanctum)
+        Auth::login($user);
+        $request->session()->regenerate();
+        
+        return redirect()->intended(route('home'))->with('success', 'Connexion réussie');
     }
 
     public function logout(Request $request)
