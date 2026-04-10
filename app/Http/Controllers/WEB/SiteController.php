@@ -66,6 +66,8 @@ class SiteController extends Controller
 
     public function showLogin()
     {
+        \Log::info('Login page accessed - Current URL: ' . url()->current());
+        \Log::info('APP_URL: ' . config('app.url'));
         return view('login');
     }
 
