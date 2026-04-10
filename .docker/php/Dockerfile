@@ -64,8 +64,18 @@ fi
 # Install dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Generate APP_KEY
-RUN php artisan key:generate --force || echo "Warning: APP_KEY generation skipped"
+# Generate APP_KEY - make it executable and generate
+RUN php artisan key:generate --force 2>&1 || \
+  (echo "Generating APP_KEY manually..." && \
+   php -r "echo 'base64:' . base64_encode(openssl_random_pseudo_bytes(32));" > /tmp/key.txt && \
+   sed -i 's/APP_KEY=.*/APP_KEY='$(cat /tmp/key.txt)'/g' .env && \
+   echo "✅ APP_KEY generated and saved to .env")
+
+# Verify APP_KEY was generated
+RUN if grep -q "APP_KEY=$" .env; then \
+  echo "❌ ERROR: APP_KEY is empty!"; exit 1; \
+else \
+  echo "✅ APP_KEY is set"; fi
 
 RUN chown -R www-data:www-data /var/www
 
