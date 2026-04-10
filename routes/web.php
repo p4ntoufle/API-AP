@@ -5,17 +5,18 @@ use App\Http\Controllers\Api\FaSeController as FactureController;
 use App\Http\Controllers\Web\SiteController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [SiteController::class, 'home'])->name('home');
-Route::get('/pensions', [SiteController::class, 'pensions'])->name('pensions');
-Route::get('/contact', [SiteController::class, 'contact'])->name('contact');
-Route::get('/horaires', [SiteController::class, 'horaires'])->name('horaires');
-Route::get('/services', [SiteController::class, 'services'])->name('services');
-Route::get('/factures', [SiteController::class, 'factures'])->name('factures');
+Route::middleware('web')->group(function () {
+    Route::get('/', [SiteController::class, 'home'])->name('home');
+    Route::get('/pensions', [SiteController::class, 'pensions'])->name('pensions');
+    Route::get('/contact', [SiteController::class, 'contact'])->name('contact');
+    Route::get('/horaires', [SiteController::class, 'horaires'])->name('horaires');
+    Route::get('/services', [SiteController::class, 'services'])->name('services');
+    Route::get('/factures', [SiteController::class, 'factures'])->name('factures');
 
-Route::get('/login', [SiteController::class, 'showLogin'])->name('login')->middleware('guest');
-Route::post('/login', [SiteController::class, 'login'])->middleware('web');
-Route::get('/register', [SiteController::class, 'showRegister'])->name('register')->middleware('guest');
-Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
+    Route::get('/login', [SiteController::class, 'showLogin'])->name('login')->middleware('guest');
+    Route::post('/login', [SiteController::class, 'login']);
+    Route::get('/register', [SiteController::class, 'showRegister'])->name('register')->middleware('guest');
+    Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
     /// GPB — Pension Dashboard ///
