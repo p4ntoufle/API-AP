@@ -78,30 +78,44 @@ class SiteController extends Controller
 
     public function login(Request $request)
     {
+        \Log::info('Login attempt', ['email' => $request->input('email')]);
+        
         $credentials = $request->validate([
             'email'    => 'required|email',
             'password' => 'required',
         ]);
 
+        \Log::info('Credentials validated', ['email' => $credentials['email']]);
+
         // Appeler l'API d'authentification
         $apiUrl = config('app.url') . '/api/auth/login';
         
+        \Log::info('Calling API', ['url' => $apiUrl]);
+        
         try {
             $response = Http::post($apiUrl, $credentials);
+            
+            \Log::info('API Response', ['status' => $response->status(), 'body' => $response->json()]);
             
             if ($response->successful()) {
                 $data = $response->json();
                 
                 // Récupérer l'utilisateur et créer une session
                 $user = User::find($data['user']['id']);
+                \Log::info('User found', ['id' => $user?->id]);
+                
                 Auth::login($user);
                 $request->session()->regenerate();
                 
+                \Log::info('User authenticated');
+                
                 return redirect()->intended(route('home'))->with('success', 'Connexion réussie');
             } else {
+                \Log::warning('API failed', ['status' => $response->status()]);
                 return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
             }
         } catch (\Exception $e) {
+            \Log::error('Login error', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return back()->withErrors(['email' => 'Erreur de connexion: ' . $e->getMessage()])->onlyInput('email');
         }
     }
