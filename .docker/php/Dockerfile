@@ -80,5 +80,5 @@ else \
 RUN chown -R www-data:www-data /var/www
 
 #entrypoint
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["php-fpm"]
