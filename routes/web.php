@@ -5,10 +5,9 @@ use App\Http\Controllers\Api\FaSeController as FactureController;
 use App\Http\Controllers\Web\SiteController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('web')->group(function () {
-    Route::get('/', [SiteController::class, 'home'])->name('home');
-    Route::get('/pensions', [SiteController::class, 'pensions'])->name('pensions');
-    Route::get('/contact', [SiteController::class, 'contact'])->name('contact');
+Route::get('/', [SiteController::class, 'home'])->name('home');
+Route::get('/pensions', [SiteController::class, 'pensions'])->name('pensions');
+Route::get('/contact', [SiteController::class, 'contact'])->name('contact');
 Route::get('/horaires', [SiteController::class, 'horaires'])->name('horaires');
 Route::get('/services', [SiteController::class, 'services'])->name('services');
 Route::get('/factures', [SiteController::class, 'factures'])->name('factures');
@@ -58,11 +57,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/animaux/{id}', [SiteController::class, 'animalDestroy'])->name('animaux.destroy');
 
     /// GAP — Profil ///
+    /// GAP — Profil ///
     Route::get('/profil', [SiteController::class, 'profil'])->name('profil');
     Route::put('/profil', [SiteController::class, 'profilUpdate'])->name('profil.update');
 
     /// GPB — Fiches (pour compatibilité) ///
     Route::get('/fiches', [SiteController::class, 'fiches'])->name('fiches');
     Route::put('/fiches/{fiche}', [GPBController::class, 'update'])->name('fiches.update');
-});
 });
