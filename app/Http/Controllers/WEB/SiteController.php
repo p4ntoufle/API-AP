@@ -12,6 +12,7 @@ use App\Models\Tarif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 
 # Controller gérant la navigation vers les endpoints
 class SiteController extends Controller
@@ -80,23 +81,27 @@ class SiteController extends Controller
             'password' => 'required',
         ]);
 
-        // Vérifier les identifiants localement
-        $user = User::where('email', $credentials['email'])->first();
+        // Appeler l'API d'authentification
+        $apiUrl = config('app.url') . '/api/auth/login';
         
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
+        try {
+            $response = Http::post($apiUrl, $credentials);
+            
+            if ($response->successful()) {
+                $data = $response->json();
+                
+                // Récupérer l'utilisateur et créer une session
+                $user = User::find($data['user']['id']);
+                Auth::login($user);
+                $request->session()->regenerate();
+                
+                return redirect()->intended(route('home'))->with('success', 'Connexion réussie');
+            } else {
+                return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
+            }
+        } catch (\Exception $e) {
+            return back()->withErrors(['email' => 'Erreur de connexion: ' . $e->getMessage()])->onlyInput('email');
         }
-
-        // Vérifier si l'email est vérifié
-        if (!$user->email_verified_at) {
-            return back()->withErrors(['email' => 'Veuillez vérifier votre email avant de vous connecter'])->onlyInput('email');
-        }
-
-        // Authentifier avec Session (pas Sanctum)
-        Auth::login($user);
-        $request->session()->regenerate();
-        
-        return redirect()->intended(route('home'))->with('success', 'Connexion réussie');
     }
 
     public function logout(Request $request)
