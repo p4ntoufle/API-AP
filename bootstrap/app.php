@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // Add custom middleware
         $middleware->append(\App\Http\Middleware\FixUrl::class);
+        
+        // Temporarily exclude login from CSRF for debugging
+        $middleware->validateCsrfTokens(except: [
+            'login',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
