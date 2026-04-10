@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\API\GPBController as GPBController;
-use App\Http\Controllers\API\FaSeController as FactureController;
+use App\Http\Controllers\Api\GPBController as GPBController;
+use App\Http\Controllers\Api\FaSeController as FactureController;
 use App\Http\Controllers\Web\SiteController;
 use Illuminate\Support\Facades\Route;
 

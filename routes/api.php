@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\API\GPBController;
-use App\Http\Controllers\API\FaSeController;
+use App\Http\Controllers\Api\GPBController;
+use App\Http\Controllers\Api\FaSeController;
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\EspeceController;
 
