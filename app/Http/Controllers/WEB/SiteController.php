@@ -104,7 +104,7 @@ class SiteController extends Controller
         
         \Log::info('User authenticated', ['id' => $user->id, 'email' => $user->email]);
         
-        return redirect()->intended(route('home'))->with('success', 'Connexion réussie');
+        return redirect('/')->with('success', 'Connexion réussie');
     }
 
     public function logout(Request $request)
