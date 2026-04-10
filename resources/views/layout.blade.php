@@ -283,5 +283,7 @@
         }
     });
 </script>
+
+@include('components.auth-script')
 </body>
 </html>

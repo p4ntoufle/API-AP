@@ -80,32 +80,30 @@ class SiteController extends Controller
 
     public function login(Request $request)
     {
-        try {
-            $credentials = $request->validate([
-                'email'    => 'required|email',
-                'password' => 'required',
-            ]);
+        $credentials = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
 
-            // Vérifier les identifiants
-            $user = User::where('email', $credentials['email'])->first();
-            
-            if (!$user || !Hash::check($credentials['password'], $user->password)) {
-                return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
-            }
-
-            // Vérifier si l'email est vérifié
-            if (!$user->email_verified_at) {
-                return back()->withErrors(['email' => 'Veuillez vérifier votre email avant de vous connecter'])->onlyInput('email');
-            }
-
-            // Authentifier l'utilisateur
-            Auth::login($user);
-            $request->session()->regenerate();
-            
-            return redirect('/')->with('success', 'Connexion réussie');
-        } catch (\Exception $e) {
-            return response('ERROR: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine(), 500);
+        $user = User::where('email', $credentials['email'])->first();
+        
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            return response()->json(['error' => 'Identifiants invalides'], 401);
         }
+
+        if (!$user->email_verified_at) {
+            return response()->json(['error' => 'Veuillez vérifier votre email avant de vous connecter'], 403);
+        }
+
+        // Générer un token Sanctum
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Connexion réussie',
+            'token' => $token,
+            'user' => $user,
+            'redirect' => '/'
+        ]);
     }
 
     public function logout(Request $request)

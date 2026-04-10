@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 // Web routes - MINIMAL middleware for debugging
 Route::middleware([
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
     \Illuminate\Session\Middleware\StartSession::class,
     \Illuminate\Routing\Middleware\SubstituteBindings::class,
 ])->group(function () {
