@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+# Controller gérant la navigation vers les endpoints
 class SiteController extends Controller
 {
     public function home()
