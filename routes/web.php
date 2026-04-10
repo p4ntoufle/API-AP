@@ -18,9 +18,9 @@ Route::middleware('web')->group(function () {
     Route::get('/register', [SiteController::class, 'showRegister'])->name('register')->middleware('guest');
     Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
 
-Route::middleware('auth')->group(function () {
-    /// GPB — Pension Dashboard ///
-    Route::get('/pension/dashboard', [SiteController::class, 'pensionDashboard'])->name('pension.dashboard');
+    Route::middleware('auth')->group(function () {
+        /// GPB — Pension Dashboard ///
+        Route::get('/pension/dashboard', [SiteController::class, 'pensionDashboard'])->name('pension.dashboard');
     Route::get('/pension/edit', [SiteController::class, 'pensionEdit'])->name('pension.edit');
     Route::put('/pension', [SiteController::class, 'pensionUpdate'])->name('pension.update');
 
@@ -64,4 +64,5 @@ Route::middleware('auth')->group(function () {
     /// GPB — Fiches (pour compatibilité) ///
     Route::get('/fiches', [SiteController::class, 'fiches'])->name('fiches');
     Route::put('/fiches/{fiche}', [GPBController::class, 'update'])->name('fiches.update');
+    });
 });
