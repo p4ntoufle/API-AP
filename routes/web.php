@@ -13,7 +13,7 @@ Route::get('/services', [SiteController::class, 'services'])->name('services');
 Route::get('/factures', [SiteController::class, 'factures'])->name('factures');
 
 Route::get('/login', [SiteController::class, 'showLogin'])->name('login')->middleware('guest');
-Route::post('/login', [SiteController::class, 'login']);
+Route::post('/login', [SiteController::class, 'login'])->middleware('web');
 Route::get('/register', [SiteController::class, 'showRegister'])->name('register')->middleware('guest');
 Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
 

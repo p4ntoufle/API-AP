@@ -24,11 +24,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
-        
-        // Temporarily exclude login from CSRF for debugging
-        $middleware->validateCsrfTokens(except: [
-            'login',
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
