@@ -82,41 +82,29 @@ class SiteController extends Controller
             'password' => 'required',
         ]);
 
-        \Log::info('Login attempt via web', ['email' => $credentials['email']]);
+        \Log::info('Login attempt', ['email' => $credentials['email']]);
 
-        // Call the API internally
-        $apiController = app(\App\Http\Controllers\AuthController::class);
+        // Vérifier les identifiants
+        $user = User::where('email', $credentials['email'])->first();
         
-        // Create a new request for the API
-        $apiRequest = Request::create('/api/auth/login', 'POST', $credentials, [], [], [
-            'HTTP_ACCEPT' => 'application/json',
-            'CONTENT_TYPE' => 'application/json',
-        ]);
-        
-        try {
-            $apiResponse = $apiController->login($apiRequest);
-            $responseData = json_decode($apiResponse->getContent(), true);
-            
-            \Log::info('API response', ['status' => $apiResponse->status()]);
-            
-            if ($apiResponse->status() === 200) {
-                $user = User::find($responseData['user']['id']);
-                
-                // Authenticate the user for web session
-                Auth::login($user);
-                $request->session()->regenerate();
-                
-                \Log::info('User authenticated', ['id' => $user->id]);
-                
-                return redirect()->intended(route('home'))->with('success', 'Connexion réussie');
-            } else {
-                \Log::warning('API auth failed', ['status' => $apiResponse->status()]);
-                return back()->withErrors(['email' => $responseData['message'] ?? 'Identifiants invalides'])->onlyInput('email');
-            }
-        } catch (\Exception $e) {
-            \Log::error('Login error', ['error' => $e->getMessage()]);
-            return back()->withErrors(['email' => 'Erreur de connexion'])->onlyInput('email');
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            \Log::warning('Invalid credentials', ['email' => $credentials['email']]);
+            return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
         }
+
+        // Vérifier si l'email est vérifié
+        if (!$user->email_verified_at) {
+            \Log::warning('Email not verified', ['email' => $credentials['email']]);
+            return back()->withErrors(['email' => 'Veuillez vérifier votre email avant de vous connecter'])->onlyInput('email');
+        }
+
+        // Authentifier l'utilisateur
+        Auth::login($user);
+        $request->session()->regenerate();
+        
+        \Log::info('User authenticated', ['id' => $user->id, 'email' => $user->email]);
+        
+        return redirect()->intended(route('home'))->with('success', 'Connexion réussie');
     }
 
     public function logout(Request $request)
