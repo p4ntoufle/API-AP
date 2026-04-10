@@ -13,8 +13,8 @@ use OpenApi\Annotations as OA;
  * )
  *
  * @OA\Server(
- *     url="http://127.0.0.1:8000",
- *     description="Local server"
+ *     url="http://app.miseauvert.fr",
+ *     description="Production server"
  * )
  *
  * @OA\SecurityScheme(
