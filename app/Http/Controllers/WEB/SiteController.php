@@ -12,7 +12,6 @@ use App\Models\Tarif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 
 # Controller gérant la navigation vers les endpoints
 class SiteController extends Controller
@@ -87,37 +86,32 @@ class SiteController extends Controller
 
         \Log::info('Credentials validated', ['email' => $credentials['email']]);
 
-        // Appeler l'API d'authentification
-        $apiUrl = config('app.url') . '/api/auth/login';
+        // Vérifier les identifiants directement
+        $user = User::where('email', $credentials['email'])->first();
         
-        \Log::info('Calling API', ['url' => $apiUrl]);
-        
-        try {
-            $response = Http::post($apiUrl, $credentials);
-            
-            \Log::info('API Response', ['status' => $response->status(), 'body' => $response->json()]);
-            
-            if ($response->successful()) {
-                $data = $response->json();
-                
-                // Récupérer l'utilisateur et créer une session
-                $user = User::find($data['user']['id']);
-                \Log::info('User found', ['id' => $user?->id]);
-                
-                Auth::login($user);
-                $request->session()->regenerate();
-                
-                \Log::info('User authenticated');
-                
-                return redirect()->intended(route('home'))->with('success', 'Connexion réussie');
-            } else {
-                \Log::warning('API failed', ['status' => $response->status()]);
-                return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
-            }
-        } catch (\Exception $e) {
-            \Log::error('Login error', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            return back()->withErrors(['email' => 'Erreur de connexion: ' . $e->getMessage()])->onlyInput('email');
+        if (!$user) {
+            \Log::warning('User not found', ['email' => $credentials['email']]);
+            return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
         }
+
+        if (!Hash::check($credentials['password'], $user->password)) {
+            \Log::warning('Password incorrect', ['email' => $credentials['email']]);
+            return back()->withErrors(['email' => 'Identifiants invalides'])->onlyInput('email');
+        }
+
+        // Vérifier si l'email est vérifié
+        if (!$user->email_verified_at) {
+            \Log::warning('Email not verified', ['email' => $credentials['email']]);
+            return back()->withErrors(['email' => 'Veuillez vérifier votre email avant de vous connecter'])->onlyInput('email');
+        }
+
+        // Authentifier l'utilisateur
+        Auth::login($user);
+        $request->session()->regenerate();
+        
+        \Log::info('User authenticated', ['id' => $user->id, 'email' => $user->email]);
+        
+        return redirect()->intended(route('home'))->with('success', 'Connexion réussie');
     }
 
     public function logout(Request $request)
