@@ -44,6 +44,7 @@ services:
       DB_PASSWORD: miseauvert
     volumes:
       - .:/var/www:cached
+      - /var/www/.env
       - /var/www/vendor
       - /var/www/node_modules
       - /var/www/bootstrap/cache
