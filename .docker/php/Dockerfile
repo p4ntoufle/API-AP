@@ -55,11 +55,17 @@ WORKDIR /var/www
 # Copy application files
 COPY . .
 
+# Create .env from .env.example if it doesn't exist
+RUN if [ ! -f .env ]; then \
+  cp .env.example .env && \
+  echo "✅ Created .env from .env.example"; \
+fi
+
 # Install dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Generate APP_KEY
-RUN php artisan key:generate --force || echo "Warning: APP_KEY generation skipped (likely no .env file yet)"
+RUN php artisan key:generate --force || echo "Warning: APP_KEY generation skipped"
 
 RUN chown -R www-data:www-data /var/www
 
