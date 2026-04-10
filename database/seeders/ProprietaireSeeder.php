@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class ProprietaireSeeder extends Seeder
 {
@@ -59,7 +60,7 @@ class ProprietaireSeeder extends Seeder
             'email' => 'paul.unverified@example.com',
             'password' => bcrypt('password123'),
             'email_verified_at' => null,
-            'email_verification_token' => 'unverified-token-' . str_random(40),
+            'email_verification_token' => 'unverified-token-' . Str::random(40),
         ]);
 
         // Créer 10 propriétaires supplémentaires de manière aléatoire
