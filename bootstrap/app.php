@@ -18,6 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
         // Add custom middleware
         $middleware->append(\App\Http\Middleware\FixUrl::class);
         
+        // API middleware group configuration
+        $middleware->group('api', [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
+        
         // Temporarily exclude login from CSRF for debugging
         $middleware->validateCsrfTokens(except: [
             'login',
