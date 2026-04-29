@@ -51,20 +51,21 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'email_verification_token' => $verificationToken
+            // 'email_verification_token' => $verificationToken
         ]);
 
         // Générer l'URL de vérification
         $verificationUrl = config('app.url') . '/api/auth/verify-email/' . $verificationToken;
 
-        // Envoyer l'email de vérification
-        Mail::send(new VerifyEmailMail($user, $verificationUrl));
+        // Envoyer l'email de vérification --- SI SERVEUR SMTP
+        // Mail::send(new VerifyEmailMail($user, $verificationUrl));
 
-        return response()->json([
+        /* return response()->json([
             'message' => 'Inscription réussie. Veuillez vérifier votre email pour activer votre compte.',
             'user' => $user,
             'email_verification_required' => true
-        ], 201);
+        ], 201); 
+        */
     }
 
     /**
@@ -107,13 +108,13 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // Vérifier si l'email a été confirmé
-        if (!$user->email_verified_at) {
+        // Vérifier si l'email a été confirmé -- SI SERVEUR SMTP
+        /* if (!$user->email_verified_at) {
             return response()->json([
                 'message' => 'Veuillez vérifier votre email avant de vous connecter',
                 'email_verified' => false
             ], 403);
-        }
+        } */
 
         $token = $user->createToken('api_token')->plainTextToken;
         return response()->json([
@@ -211,7 +212,9 @@ class AuthController extends Controller
      *     @OA\Response(response=400, description="Token invalide ou expiré")
      * )
      */
-    public function verifyEmail($token) {
+
+    // VÉRIFIER MAIL -- SI SERVEUR SMTP
+    /* public function verifyEmail($token) {
         // Chercher l'utilisateur avec ce token
         $user = User::where('email_verification_token', $token)->first();
 
@@ -243,6 +246,7 @@ class AuthController extends Controller
             'token' => $authToken
         ]);
     }
+        */
 
     /**
      * @OA\Post(
@@ -265,7 +269,9 @@ class AuthController extends Controller
      *     @OA\Response(response=400, description="Email déjà vérifié")
      * )
      */
-    public function resendVerificationEmail(Request $request) {
+
+    // RENVOYER MAIL -- SI SERVEUR SMTP
+    /* public function resendVerificationEmail(Request $request) {
         $data = $request->validate([
             'email' => ['required', 'email', 'exists:users']
         ]);
@@ -293,5 +299,6 @@ class AuthController extends Controller
             'message' => 'Email de vérification renvoyé avec succès'
         ]);
     }
+        */
 }
 
