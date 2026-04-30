@@ -70,6 +70,17 @@ use OpenApi\Annotations as OA;
  * )
  *
  * @OA\Schema(
+ *     schema="Option",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="pension_id", type="integer"),
+ *     @OA\Property(property="libelle", type="string"),
+ *     @OA\Property(property="tarif", type="number", format="float"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ *
+ * @OA\Schema(
  *     schema="User",
  *     type="object",
  *     @OA\Property(property="id", type="integer"),

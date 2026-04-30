@@ -52,44 +52,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Statistiques -->
-            <div class="col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100">
-                    <div class="card-body">
-                        <h5 class="card-title" style="color: var(--primary-green)">
-                            <i class="fas fa-chart-bar"></i> Statistiques
-                        </h5>
-                        <hr>
-                        <div class="row text-center">
-                            <div class="col-6 mb-3">
-                                <p class="text-muted small mb-1">Types de Gardiennage</p>
-                                <h3 style="color: var(--light-green)">{{ $pension->typesGardiennage->count() }}</h3>
-                                <a href="{{ route('pension.types-gardiennage') }}" class="btn btn-sm btn-outline-primary mt-2">
-                                    <i class="fas fa-arrow-right"></i> Gérer
-                                </a>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <p class="text-muted small mb-1">Tarifs</p>
-                                <h3 style="color: var(--light-green)">{{ $pension->tarifs->count() }}</h3>
-                                <a href="{{ route('pension.tarifs') }}" class="btn btn-sm btn-outline-primary mt-2">
-                                    <i class="fas fa-arrow-right"></i> Gérer
-                                </a>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <p class="text-muted small mb-1">Boxes</p>
-                                <h3 style="color: var(--light-green)">{{ $pension->boxes->count() }}</h3>
-                                <a href="{{ route('pension.boxes') }}" class="btn btn-sm btn-outline-primary mt-2">
-                                    <i class="fas fa-arrow-right"></i> Gérer
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-
-    </div>
 
     <style>
         .border-left-primary {

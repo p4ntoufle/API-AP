@@ -43,6 +43,16 @@ Route::middleware('auth')->group(function () {
     Route::put('/pension/tarifs/{tarif}', [SiteController::class, 'pensionTarifUpdate'])->name('pension.tarifs.update');
     Route::delete('/pension/tarifs/{tarif}', [SiteController::class, 'pensionTarifDestroy'])->name('pension.tarifs.destroy');
 
+    // ORAL
+
+    /// GPB — Options ///
+    Route::get('/pension/options', [SiteController::class, 'pensionOptions'])->name('pension.options');
+    Route::post('/pension/options', [SiteController::class, 'pensionOptionStore'])->name('pension.options.store');
+    Route::put('/pension/options/{option}', [SiteController::class, 'pensionOptionUpdate'])->name('pension.options.update');
+    Route::delete('/pension/options/{option}', [SiteController::class, 'pensionOptionDestroy'])->name('pension.options.destroy');
+
+    // FIN ORAL
+
     /// GPB — Boxes ///
     Route::get('/pension/boxes', [SiteController::class, 'pensionBoxes'])->name('pension.boxes');
     Route::get('/pension/boxes/create', [SiteController::class, 'pensionBoxCreate'])->name('pension.boxes.create');

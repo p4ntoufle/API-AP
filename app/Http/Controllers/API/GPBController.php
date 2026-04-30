@@ -8,6 +8,7 @@ use App\Models\Pension;
 use App\Models\Box;
 use App\Models\TypeGardiennage;
 use App\Models\Tarif;
+use App\Models\Option;
 use OpenApi\Annotations as OA;
 
 class GPBController extends Controller
@@ -26,7 +27,7 @@ class GPBController extends Controller
      */
     public function index()
     {
-        return response()->json(Pension::all());
+        return response()->json(Pension::with('options')->get());
     }
 
     /**
@@ -41,7 +42,7 @@ class GPBController extends Controller
      */
     public function show($id)
     {
-        $pension = Pension::findOrFail($id);
+        $pension = Pension::with('options')->findOrFail($id);
         return response()->json($pension);
     }
 
@@ -402,6 +403,50 @@ class GPBController extends Controller
         $tarif = Tarif::findOrFail($id);
         $tarif->delete();
         return response()->json(['message' => 'Tarif supprimé']);
+    }
+
+
+    /// ORAL
+
+    public function getOptions($id)
+    {
+        $pension = Pension::findOrFail($id);
+        return response()->json($pension->options);
+    }
+
+    public function storeOption(Request $request, $id)
+    {
+        $pension = Pension::findOrFail($id);
+        $validated = $request->validate([
+            'libelle' => 'required|string|max:255',
+            'tarif' => 'required|numeric|min:0',
+        ]);
+
+        $validated['pension_id'] = $pension->id;
+        $option = Option::create($validated);
+
+        return response()->json($option, 201);
+    }
+
+    public function updateOption(Request $request, $id)
+    {
+        $option = Option::findOrFail($id);
+        $validated = $request->validate([
+            'libelle' => 'required|string|max:255',
+            'tarif' => 'required|numeric|min:0',
+        ]);
+
+        $option->update($validated);
+
+        return response()->json($option);
+    }
+
+    public function deleteOption($id)
+    {
+        $option = Option::findOrFail($id);
+        $option->delete();
+
+        return response()->json(['message' => 'Option supprimée']);
     }
 }
 

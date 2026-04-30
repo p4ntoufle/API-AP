@@ -9,6 +9,7 @@ use App\Models\Pension;
 use App\Models\Box;
 use App\Models\TypeGardiennage;
 use App\Models\Tarif;
+use App\Models\Option;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -40,7 +41,7 @@ class SiteController extends Controller
             return redirect()->route('pension.dashboard');
         }
 
-        $pensions = Pension::all();
+        $pensions = Pension::with('options')->get();
         return view('pensions', compact('pensions'));
     }
 
@@ -479,6 +480,76 @@ class SiteController extends Controller
         return redirect()->route('pension.tarifs')->with('success', 'Tarif supprimé avec succès !');
     }
 
+    // ORAL
+    public function pensionOptions()
+    {
+        $pension = Auth::user()->pension;
+
+        if (!$pension) {
+            return redirect()->route('pension.edit')->with('error', 'Veuillez d\'abord compléter votre fiche de pension');
+        }
+
+        $options = $pension->options()->orderBy('libelle')->get();
+
+        return view('pension.options', compact('pension', 'options'));
+    }
+
+    public function pensionOptionStore(Request $request)
+    {
+        $pension = Auth::user()->pension;
+
+        if (!$pension) {
+            return redirect()->route('pension.edit')->with('error', 'Veuillez d\'abord compléter votre fiche de pension');
+        }
+
+        $validated = $request->validate([
+            'libelle' => 'required|string|max:255',
+            'tarif' => 'required|numeric|min:0',
+        ]);
+
+        Option::create([
+            'pension_id' => $pension->id,
+            'libelle' => $validated['libelle'],
+            'tarif' => $validated['tarif'],
+        ]);
+
+        return redirect()->route('pension.options')->with('success', 'Option ajoutée avec succès !');
+    }
+
+    public function pensionOptionUpdate(Request $request, Option $option)
+    {
+        $pension = Auth::user()->pension;
+
+        if (!$pension || $option->pension_id !== $pension->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'libelle' => 'required|string|max:255',
+            'tarif' => 'required|numeric|min:0',
+        ]);
+
+        $option->update($validated);
+
+        return redirect()->route('pension.options')->with('success', 'Option mise à jour avec succès !');
+    }
+
+    public function pensionOptionDestroy(Option $option)
+    {
+        $pension = Auth::user()->pension;
+
+        if (!$pension || $option->pension_id !== $pension->id) {
+            abort(403);
+        }
+
+        $option->delete();
+
+        return redirect()->route('pension.options')->with('success', 'Option supprimée avec succès !');
+    }
+
+    // FIN ORAL
+
+    
     // ─── Gestion des Boxes ───
 
     public function pensionBoxes()

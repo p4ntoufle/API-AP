@@ -47,4 +47,11 @@ class Pension extends Model {
     {
         return $this->hasMany(Tarif::class);
     }
+
+    // ORAL
+
+    public function options()
+    {
+        return $this->hasMany(Option::class);
+    }
 }

@@ -204,6 +204,38 @@
             border: 1px solid #dcfce7;
         }
 
+        .options-list {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 12px;
+            background: #f8f9fa;
+        }
+
+        .options-list h4 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: #2d6a4f;
+            font-weight: 700;
+        }
+
+        .option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed #ddd;
+            padding: 0.4rem 0;
+            font-size: 0.95rem;
+        }
+
+        .option-row:last-child {
+            border-bottom: 0;
+        }
+
+        .option-price {
+            color: #2d6a4f;
+            font-weight: 700;
+        }
+
         .pension-footer {
             padding-top: 1rem;
             border-top: 1px solid #f0f0f0;
@@ -368,6 +400,22 @@
                                         </div>
                                     @endif
                                 </div>
+
+                                <!-- ORAL -->
+
+                                @if($pension->options->isNotEmpty())
+                                    <div class="options-list">
+                                        <h4>Options disponibles</h4>
+                                        @foreach($pension->options as $option)
+                                            <div class="option-row">
+                                                <span>{{ $option->libelle }}</span>
+                                                <span class="option-price">{{ number_format($option->tarif, 2, ',', ' ') }} EUR</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                                <!-- FIN ORAL -->
 
                                 <!-- Footer with action button -->
                                 <div class="pension-footer">

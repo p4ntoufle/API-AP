@@ -7,6 +7,7 @@ use App\Models\Pension;
 use App\Models\TypeGardiennage;
 use App\Models\Box;
 use App\Models\Tarif;
+use App\Models\Option;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -59,6 +60,19 @@ class PensionCompleteSeeder extends Seeder
             ['prix' => 30.00]
         );
 
+        // ORAL
+
+        Option::firstOrCreate(
+            ['pension_id' => $pension1->id, 'libelle' => 'Jeux'],
+            ['tarif' => 18.00]
+        );
+        Option::firstOrCreate(
+            ['pension_id' => $pension1->id, 'libelle' => 'Coussins'],
+            ['tarif' => 12.50]
+        );
+
+        // FIN ORAL
+
         for ($i = 1; $i <= 3; $i++) {
             Box::firstOrCreate(
                 ['pension_id' => $pension1->id, 'id' => $pension1->id * 1000 + $i],
@@ -101,6 +115,11 @@ class PensionCompleteSeeder extends Seeder
         Tarif::firstOrCreate(
             ['pension_id' => $pension2->id, 'type_gardiennage_id' => $type2_2->id],
             ['prix' => 18.50]
+        );
+
+        Option::firstOrCreate(
+            ['pension_id' => $pension2->id, 'libelle' => 'Accompagnement sonore'],
+            ['tarif' => 9.00]
         );
 
         for ($i = 1; $i <= 4; $i++) {

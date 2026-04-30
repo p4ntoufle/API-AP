@@ -64,6 +64,17 @@ Route::post('/pensions/{id}/tarifs', [GPBController::class, 'storeTarif']);
 Route::put('/tarifs/{id}', [GPBController::class, 'updateTarif']);
 Route::delete('/tarifs/{id}', [GPBController::class, 'deleteTarif']);
 
+/// ORAL 
+
+/// OPTIONS
+Route::get('/pensions/{id}/options', [GPBController::class, 'getOptions']);
+Route::post('/pensions/{id}/options', [GPBController::class, 'storeOption']);
+Route::put('/options/{id}', [GPBController::class, 'updateOption']);
+Route::delete('/options/{id}', [GPBController::class, 'deleteOption']);
+
+// FIN ORAL 
+
+
 /// Propriétaires (pour l'appli lourde pension) ///
 Route::get('/proprietaires', [App\Http\Controllers\Api\GAPController::class, 'proprietaires']);
 Route::get('/proprietaires/{id}/animaux', [App\Http\Controllers\Api\GAPController::class, 'animauxProprietaire']);

@@ -172,6 +172,17 @@
                                 <i class="fas fa-cube me-1"></i> Boxes
                             </a>
                         </li>
+
+                        <!-- ORAL -->
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pension.options') }}">
+                                <i class="fas fa-list-check me-1"></i> Options
+                            </a>
+                        </li>
+
+                        <!-- FIN ORAL -->
+
                     @else
                         <!-- Navigation pour les propriétaires d'animaux -->
                         <li class="nav-item">
