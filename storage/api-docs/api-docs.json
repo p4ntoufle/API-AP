@@ -7,8 +7,8 @@
     },
     "servers": [
         {
-            "url": "http://127.0.0.1:8000",
-            "description": "Local server"
+            "url": "http://app.miseauvert.fr",
+            "description": "Production server"
         }
     ],
     "paths": {
@@ -19,7 +19,7 @@
                 ],
                 "summary": "Liste les factures (paginées)",
                 "description": "Lister les factures.",
-                "operationId": "dfc2108e35c6cc17947103581907b38c",
+                "operationId": "8bf3328f059f385f0feed13292f843d9",
                 "parameters": [
                     {
                         "name": "per_page",
@@ -67,7 +67,7 @@
                 ],
                 "summary": "Créer une nouvelle facture",
                 "description": "Créer une facture.",
-                "operationId": "3ee776bf558fdc128f70ba1cba4fc051",
+                "operationId": "8f85a53176dcb34bbb56db2c6f648142",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -149,7 +149,7 @@
                 ],
                 "summary": "Afficher une facture",
                 "description": "Afficher une facture.",
-                "operationId": "8b0038ed248cf31e7c14dd52e36b467e",
+                "operationId": "5aa01beb4bb1bbbdbe8b070d3e763f86",
                 "parameters": [
                     {
                         "name": "facture",
@@ -183,7 +183,7 @@
                 ],
                 "summary": "Mettre à jour une facture",
                 "description": "Mettre à jour une facture.",
-                "operationId": "8697bca7e1125d6687c502edd050d467",
+                "operationId": "02d2361bd8de3f0ea0fe02f743fe6178",
                 "parameters": [
                     {
                         "name": "facture",
@@ -265,7 +265,7 @@
                 ],
                 "summary": "Supprimer une facture",
                 "description": "Supprimer une facture.",
-                "operationId": "da42c23a54624d9182d2cda0beeec1e6",
+                "operationId": "53bcb23d496425b6bb44c5509e5a06e7",
                 "parameters": [
                     {
                         "name": "facture",
@@ -301,7 +301,7 @@
                 ],
                 "summary": "Télécharger le PDF d'une facture",
                 "description": "Télécharger le PDF d'une facture.",
-                "operationId": "f4f04f9565c1132b36aa55c308253dba",
+                "operationId": "677013142ec1e2e6f4717add0d511e71",
                 "parameters": [
                     {
                         "name": "facture",
@@ -333,13 +333,255 @@
                 ]
             }
         },
+        "/api/animaux": {
+            "get": {
+                "tags": [
+                    "Animaux"
+                ],
+                "summary": "Liste des animaux de l'utilisateur connecté",
+                "operationId": "97fa5f84fd3fe9674a5e115fabbb838a",
+                "responses": {
+                    "200": {
+                        "description": "Liste des animaux"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Animaux"
+                ],
+                "summary": "Créer un animal",
+                "operationId": "038572e69f0a88b048bb654a883cab68",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nom"
+                                ],
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "espece": {
+                                        "type": "string"
+                                    },
+                                    "race": {
+                                        "type": "string"
+                                    },
+                                    "age": {
+                                        "type": "integer"
+                                    },
+                                    "poids": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "carnet_vaccination": {
+                                        "type": "boolean"
+                                    },
+                                    "vaccin_a_jour": {
+                                        "type": "boolean"
+                                    },
+                                    "vermifuge_a_jour": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Animal créé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/animaux/{id}": {
+            "get": {
+                "tags": [
+                    "Animaux"
+                ],
+                "summary": "Afficher un animal",
+                "operationId": "5309984bed6c163821423ad1d541b47a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Animal trouvé"
+                    },
+                    "404": {
+                        "description": "Animal non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Animaux"
+                ],
+                "summary": "Mettre à jour un animal",
+                "operationId": "9161cf39bdedbaeb9ee7631d67716660",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "espece": {
+                                        "type": "string"
+                                    },
+                                    "race": {
+                                        "type": "string"
+                                    },
+                                    "age": {
+                                        "type": "integer"
+                                    },
+                                    "poids": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "vaccin_a_jour": {
+                                        "type": "boolean"
+                                    },
+                                    "vermifuge_a_jour": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Animal mis à jour"
+                    },
+                    "404": {
+                        "description": "Animal non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Animaux"
+                ],
+                "summary": "Supprimer un animal",
+                "operationId": "79379a748d9c936d556e3e8e5b4c3c39",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Animal supprimé"
+                    },
+                    "404": {
+                        "description": "Animal non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/proprietaires": {
+            "get": {
+                "tags": [
+                    "Propriétaires"
+                ],
+                "summary": "Liste des propriétaires avec leurs animaux",
+                "operationId": "4bb8cccb5f52c35e1e7e45a1c8bde012",
+                "responses": {
+                    "200": {
+                        "description": "Liste des utilisateurs avec animaux"
+                    }
+                }
+            }
+        },
+        "/api/proprietaires/{id}/animaux": {
+            "get": {
+                "tags": [
+                    "Propriétaires"
+                ],
+                "summary": "Liste des animaux d'un propriétaire",
+                "operationId": "98fe41df726deee5ca5daf6250e4d8fc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des animaux"
+                    }
+                }
+            }
+        },
         "/api/pensions": {
             "get": {
                 "tags": [
                     "Pensions"
                 ],
                 "summary": "Récupérer toutes les pensions",
-                "operationId": "13b4dadf4d40aca6f413bb9fc4facde4",
+                "operationId": "cf327193d22f43783ec6d0309c4a745e",
                 "responses": {
                     "200": {
                         "description": "Liste des pensions",
@@ -361,7 +603,7 @@
                     "Pensions"
                 ],
                 "summary": "Créer une pension",
-                "operationId": "afce2480fd88991cf54cee410999c69a",
+                "operationId": "d77907a44ef52eb9c5b3ba77ff88743e",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -438,7 +680,7 @@
                     "Pensions"
                 ],
                 "summary": "Afficher une pension",
-                "operationId": "22a0fb1be97756ae1878353e4ef035c1",
+                "operationId": "96f84d56fb0e4e83b8edc2c6cd1838a1",
                 "parameters": [
                     {
                         "name": "id",
@@ -470,7 +712,7 @@
                     "Pensions"
                 ],
                 "summary": "Mettre à jour une pension",
-                "operationId": "b681ff30cb18c9133c8716095be265fd",
+                "operationId": "1e4a2f8dcaf9b464f177356dfc1adcfe",
                 "parameters": [
                     {
                         "name": "id",
@@ -515,7 +757,7 @@
                     "Pensions"
                 ],
                 "summary": "Supprimer une pension",
-                "operationId": "fc871aad669fe0f85e1faefb9b29f3fd",
+                "operationId": "b676ef9735e1adaa9201df31a04699fa",
                 "parameters": [
                     {
                         "name": "id",
@@ -542,7 +784,7 @@
                     "Boxes"
                 ],
                 "summary": "Récupérer les boxes d'une pension",
-                "operationId": "5f436488d6e904f8c49df4a720c9f589",
+                "operationId": "d78121ff4d85a1488e3ac29eceaacc38",
                 "parameters": [
                     {
                         "name": "id",
@@ -577,7 +819,7 @@
                     "Boxes"
                 ],
                 "summary": "Créer une box",
-                "operationId": "b1f8b823140216a1e4558deb2900016e",
+                "operationId": "ac24f51f02b6236d86f7f31b3e60f25b",
                 "parameters": [
                     {
                         "name": "id",
@@ -630,7 +872,7 @@
                     "Boxes"
                 ],
                 "summary": "Mettre à jour une box",
-                "operationId": "db6d9618b7321fbc46e943e1ac0a2b1a",
+                "operationId": "655fd14e8f1f3412c0b0a0da60cea6e0",
                 "parameters": [
                     {
                         "name": "id",
@@ -681,7 +923,7 @@
                     "Boxes"
                 ],
                 "summary": "Supprimer une box",
-                "operationId": "9a48e315b513442740cec77fa98e0b0f",
+                "operationId": "909871f34a0e87678974c22badb5783e",
                 "parameters": [
                     {
                         "name": "id",
@@ -708,7 +950,7 @@
                     "Types de Gardiennage"
                 ],
                 "summary": "Récupérer les types de gardiennage d'une pension",
-                "operationId": "db3fdd5bab300bb07aac36954da55476",
+                "operationId": "4b2720f1594625d5ca71cdf998029516",
                 "parameters": [
                     {
                         "name": "id",
@@ -743,7 +985,7 @@
                     "Types de Gardiennage"
                 ],
                 "summary": "Créer un type de gardiennage",
-                "operationId": "26c0b1eb80774ead512fe458a2286ef2",
+                "operationId": "93ad189f221467d8be341558f76c3b5d",
                 "parameters": [
                     {
                         "name": "id",
@@ -796,7 +1038,7 @@
                     "Types de Gardiennage"
                 ],
                 "summary": "Mettre à jour un type de gardiennage",
-                "operationId": "9928ad5b1d3dbb3eb942828ee794525a",
+                "operationId": "b619350b0313408bf246b5398b069580",
                 "parameters": [
                     {
                         "name": "id",
@@ -847,7 +1089,7 @@
                     "Types de Gardiennage"
                 ],
                 "summary": "Supprimer un type de gardiennage",
-                "operationId": "2847486e7ab0b91ac01c70243bc6efd2",
+                "operationId": "0ec2f11c67373c0e47707c20817d9517",
                 "parameters": [
                     {
                         "name": "id",
@@ -874,7 +1116,7 @@
                     "Tarifs"
                 ],
                 "summary": "Récupérer les tarifs d'une pension",
-                "operationId": "5956ae18f22e69a8e89333c7c76df935",
+                "operationId": "61411cff82d7206271412df1d1ebf7e8",
                 "parameters": [
                     {
                         "name": "id",
@@ -909,7 +1151,7 @@
                     "Tarifs"
                 ],
                 "summary": "Créer un tarif",
-                "operationId": "82ea94d80487344c7f04ce9bd7821463",
+                "operationId": "ab75727e66fd9b613326112689ad23be",
                 "parameters": [
                     {
                         "name": "id",
@@ -965,7 +1207,7 @@
                     "Tarifs"
                 ],
                 "summary": "Mettre à jour un tarif",
-                "operationId": "622629806515dbedaac8ccd12812ddd6",
+                "operationId": "860b83f9830f61929f46a5fc02de04b4",
                 "parameters": [
                     {
                         "name": "id",
@@ -1016,7 +1258,7 @@
                     "Tarifs"
                 ],
                 "summary": "Supprimer un tarif",
-                "operationId": "98cbb30271755b081bef38e0a079283f",
+                "operationId": "21ae6a09d715862d65e07ab1974c6063",
                 "parameters": [
                     {
                         "name": "id",
@@ -1412,6 +1654,14 @@
         {
             "name": "Factures",
             "description": "Factures"
+        },
+        {
+            "name": "Animaux",
+            "description": "Animaux"
+        },
+        {
+            "name": "Propriétaires",
+            "description": "Propriétaires"
         },
         {
             "name": "Pensions",
